@@ -1,0 +1,92 @@
+```{r}
+## Komunikaty
+
+# Podstawowe funkcje do zgłaszania komunikatów:
+# - `stop()` - zatrzymuje wykonanie, zgłasza błąd
+# - `warning()` - ostrzega, ale kontynuuje wykonanie
+# - `message()` - wyświetla komunikat informacyjny
+
+```
+
+```{r}
+oblicz_bmi <- function(waga, wzrost){
+    if(!is.numeric(waga)) stop("waga nie jest liczbą")
+    if(!is.numeric(wzrost)) stop("wzrost nie jest liczbą")
+    if(waga <= 0) warning("Waga powinna być dodatnia")
+    if(wzrost <= 0) warning("Wzrost powinnien być dodatni")
+  waga/wzrost^2*10000
+}
+```
+
+```{r}
+oblicz_bmi(55,167)
+```
+
+```{r}
+oblicz_bmi(55,-3)
+```
+
+
+```{r}
+  oblicz_dobre_bmi <- function(waga, wzrost){
+    tryCatch(
+    expr = waga/wzrost^2*10000,
+    error = function(e) {0},
+    warning = function(w) {print("Nie wpisano prawidowych wartości liczbowych")}
+  )
+}
+```
+
+```{r}
+oblicz_dobre_bmi(55, "2")
+```
+
+```{r}
+#Zadanie: Utwórz funkcje, która będzie zwracać współczynniki kierunkowe modelu regresji liniowej pomiędzy zmiennymi z wejściowej ramki danych.
+
+wsp_korelacji <- function(x, y){
+  tryCatch(
+    expr = cor(x, y),
+    error = function(e) {
+      warning(conditionMessage(e))
+      return(NA)
+    }
+  )
+} 
+```
+
+```{r}
+wsp_korelacji(1:10, "1:10")
+```
+
+```{r}
+#Zadanie: Utwórz funkcje, która będzie zwracać współczynniki korelacji liniowej pomiędzy kolumnami wejściowej ramki danych.
+cor_df <- function(df){
+  if(!is.data(df)) stop("df musi być ramką danych")
+  cor(df)
+}
+
+df <- data.frame(x = 1:10, y= rnorm(10), z = letters[1:10])
+lapply(df, mean)
+lapply(df, class)
+sapply(df, class) #simple apply najprostrzy możliwy obiekt zwraca
+df
+
+cor_d(df{1;1:2})
+```
+
+```{r}
+lapply(1:5, sqrt)
+
+df[1,1] <- NA
+lapply(df, mean, na.rm = TRUE)
+```
+
+```{r}
+lapply(1:5, function(i){
+  x <- sample(letters, i)
+  paste(x, collapse = " ")
+  }
+)
+```
+
