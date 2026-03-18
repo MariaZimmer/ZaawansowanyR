@@ -1,6 +1,17 @@
 ```{r}
 #pętla for
-#funkcja apply
-#lk
+#funkcja apply - weź każdy element i wykonaj na nim tę samą operację
+```
+
+```{r}
+lapply(iris[,1:4], quantile, probls = seq(0,1,0.1)) #to samo co for generuje macierze lub wektory
+```
+```{r}
+sapply(iris[,1:4], quantile, probls = seq(0,1,0.1)) #wektor jeżeli wektor a jeżeli kilka wektorów tej samej długości to skleja do macierzy
+```
+funkcja sapply ma sens w przypadku, gdy wyniki pojedyńczych iteracji są wetorami o takich samych długościach
+
+```{r}
+
 ```
 
