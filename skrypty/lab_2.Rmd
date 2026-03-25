@@ -12,6 +12,11 @@ sapply(iris[,1:4], quantile, probls = seq(0,1,0.1)) #wektor jeżeli wektor a je�
 funkcja sapply ma sens w przypadku, gdy wyniki pojedyńczych iteracji są wetorami o takich samych długościach
 
 ```{r}
+vapply(iris[,1:4], sd, FUN.VALUE = numeric(1))
+```
 
+Wyznacz wartości maksymalne z kolumn w zbiorze irys
+```{r}
+vapply(iris[,1:4], max, FUN.VALUE = numeric(1))
 ```
 
