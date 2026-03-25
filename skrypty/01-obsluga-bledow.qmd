@@ -1,0 +1,151 @@
+---
+title: "01-obsluga-bledow"
+format: html
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = TRUE,
+  warning = TRUE,
+  message = TRUE,
+  error = TRUE
+)
+```
+
+## Komunikaty
+
+Podstawowe funkcje do zgłaszania komunikatów:
+- `stop()` - zatrzymuje wykonanie, zgłasza błąd
+- `warning()` - ostrzega, ale kontynuuje wykonanie
+- `message()` - wyświetla komunikat informacyjny
+
+Przykład:
+
+```{r}
+oblicz_bmi <- function(waga, wzrost) {
+  waga/wzrost^2
+}
+
+oblicz_bmi(80, "2")
+```
+
+```{r}
+oblicz_bmi <- function(waga, wzrost) {
+  if (!is.numeric(waga)) stop("waga nie jest liczba")
+  if (!is.numeric(wzrost)) stop("waga nie jest liczba")
+  waga/wzrost^2
+}
+
+#oblicz_bmi(80,"2")
+```
+
+Przykład:
+
+```{r}
+oblicz_bmi(80,2)
+```
+```{r}
+oblicz_bmi <- function(waga, wzrost) {
+  if (!is.numeric(waga)) stop("waga nie jest liczba")
+  if (!is.numeric(wzrost)) stop("waga nie jest liczba")
+  if (waga <= 0) warning("`waga` nie jest dodatnia")#'' zamieszzca sie do oznaczenia parametru
+  if (wzrost <= 0) warning("`waga` nie jest dodatnia")
+  waga/wzrost^2
+}
+```
+
+```{r}
+oblicz_bmi(80, -12)
+```
+
+
+# Obsługa błędów
+
+## `tryCatch()`
+
+Funkcja `tryCatch()`pozwala przechwycić błąd (*error*), ostrzeżenie (*warning*) lub komunikat (*message*) i zareagować na nie w kontrolowany sposób.
+
+Składnia:
+
+```r
+tryCatch(
+  expr = {
+    # kod, który może wywołać błąd
+  },
+  error   = function(e) { /* obsługa błędu */ },
+  warning = function(w) { /* obsługa ostrzeżenia */ },
+  message = function(m) { /* obsługa komunikatu */ },
+  finally = { /* zawsze wykonywane */ }
+)
+```
+
+Przykład:
+
+```{r}
+oblicz_wsp_korelacji <- function(x, y) (
+  tryCatch(
+    expr = cor(x, y),
+    error = function(e) {
+      #warning("abc")
+      warning(conditionMessage(e))
+      return(NA)
+      }
+  )
+)
+# doataow warming isn numeric aby warostsc wporadzaba byla warotscia liczbowa
+```
+
+```{r}
+oblicz_wsp_korelacji(1:10, 1:10)
+```
+
+```{r}
+oblicz_wsp_korelacji(1:10, "a")
+```
+
+
+Zadanie: Utwórz funkcje, która będzie zwracać współczynniki (też jednka nie R^2) (a nie kierunkowe) modelu regresji liniowej pomiędzy kolumnami wejsciowej ramoki danych.
+
+```{r}
+cor_df <- function(df){
+  if (!is.data.frame(df)) stop("'df' musi byc ramka danych")
+  cor(df)
+}
+```
+
+```{r}
+df <- data.frame(x = 1:10, y = rnorm(10), z = letters(1:10))
+df
+```
+
+```{r}
+cor_df("a")
+```
+
+# Dodatek funkja apply
+
+
+```{r}
+lapply(1:5, sqrt)
+```
+
+```{r}
+df <- data.frame(x = 1:10, y = rnorm(10), z = letters[1:10])
+lapply(df, mean)
+lapply(df, class)
+sapply(df, class)# s od simple czyli prostrzy obiekt w tym wypadku do wektora
+```
+
+```{r}
+df[1, 1] <- NA
+lapply(df, mean, na.rm = TRUE)
+```
+
+```{r}
+lapply(1:5, function(i) {
+  x <- sample(letters, i)
+  paste(x, collapse = "")
+})
+```
+
