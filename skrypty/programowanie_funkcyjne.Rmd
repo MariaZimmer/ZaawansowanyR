@@ -1,0 +1,300 @@
+# Wprowadzenie
+
+R jest w swoim sercu językiem **programowania funkcyjnego** (functional programming, FP). Oznacza to, że dostarcza wielu narzędzi do tworzenia i manipulowania funkcjami. W szczególności R posiada **funkcje pierwszej klasy** (first-class functions): możesz z nimi robić wszystko to, co z wektorami — przypisywać do zmiennych, przechowywać w listach, **przekazywać jako argumenty do innych funkcji**, tworzyć wewnątrz funkcji, a nawet zwracać jako wynik funkcji.
+
+# 1. Funkcje z rodziny `apply`
+
+Rodzina funkcji `apply` to zestaw funktorów R, które pozwalają stosować funkcję do elementów obiektu bez pisania pętli.
+
+## `apply()`
+
+`apply(X, MARGIN, FUN)` stosuje funkcję wzdłuż marginesów dwuwymiarowego obiektu (macierz, ramka danych).
+
+Przykład: Utwórz macierz 3X4 wypełnioną liczbami 1:12
+
+```{r}
+mat <- matrix(1:12, nrow = 3)
+mat
+```
+
+Przykład: Wyświetl wektor ze średnią arytmetyczną każdego wiersza (pętla for vs funkcja apply)
+
+```{r}
+# pęla for
+mat_rows_avg <- numeric(nrow(mat))
+for (i in 1:nrow(mat)) {
+  mat_rows_avg[i] <- mean(mat[i,])
+}
+print(mat_rows_avg)
+remove(i) # to nie jest konieczne, dobra praktyka
+```
+
+```{r}
+# funkcja apply
+apply(mat, 1, mean) # MARGIN = 1 - wiersze
+```
+
+Przykład: Wyznacz skumulowane sumy każdej kolumny
+```{r}
+apply(mat, 2, cumsum) # MARGIN = 2 - kolumny
+```
+
+Przykład: Wyznacz rozstęp każdego wiersza
+
+```{r}
+# stosujemy funkcję anonimową
+apply(mat, 1, function(x) max(x) - min(x))
+
+# skorzystamy ze skróconego zapisu
+apply(mat, 1, \(x) max(x) - min(x))
+```
+Przykład: Zastosuje funkcję apply na ramce danych
+
+```{r}
+df <- data.frame(a = 1:3, b = letters[1:3])
+
+apply(df, 2, max)
+apply(df, 1, max)
+```
+**Uwaga** funkcja `apply` zamienia ramkę danych na macierz
+
+
+## `lapply()`i `sapply()`
+
+`lapply()` stosuje funkcję do każdego elementu obiektu i **zawsze zwraca listę**. 
+
+`sapply()` działa jak `lapply()`, ale automatycznie **upraszcza wynik**: jeśli każdy element ma długość 1, zwraca wektor; jeśli tę samą długość > 1, zwraca macierz.
+
+**Ostrzeżenie:** Upraszczanie przez `sapply()` bywa nieprzewidywalne — wynik zależy od danych. W kodzie produkcyjnym, który musi działać niezawodnie, preferuj `vapply()`.
+
+Przykład: Wygeneruj losowo wektory z rozkładu normalnego od długościach od 1 do 5
+
+```{r}
+lapply(1:5, rnorm)
+```
+
+```{r}
+sapply(1:5, rnorm)
+```
+
+**Uwaga**: Funkcja `sapply` ma sens w przypadku, gdy wyniki pojedyńczych iteracji są wektorami o takich samych długościach
+
+
+Przykład: Wygeneruj losowo wektory z rozkładu beta(2,3) długościach od 1 do 5
+
+```{r}
+lapply(1:5, \(i) rbeta(i, 2, 3))
+```
+
+```{r}
+lapply(1:5, rbeta, shape1 = 2, shape2 = 3)
+```
+
+Przykład: Wygeneruj losowo 4 elementowe wektory z rozkładu t(n), n = 1:5
+
+```{r}
+lapply(1:5, \(n) rt(4, df = n))
+```
+
+Przykład: Sprawdź klasy kolumn w zbiorze iris
+
+```{r}
+lapply(iris, class)
+```
+
+```{r}
+sapply(iris, class)
+```
+
+Przykład: Wyznacz decyle kolumn w zbiorze iris
+
+```{r}
+lapply(iris[,1:4], quantile, probs = seq(0, 1, 0.1))
+```
+
+```{r}
+sapply(iris[,1:4], quantile, probs = seq(0, 1, 0.1))
+```
+
+
+Przykład: Dokonaj standaryzacji kolumn w zbiorze iris
+
+```{r}
+iris[, 1:4] <- lapply(iris[, 1:4], \(x) (x - mean(x))/sd(x))
+head(iris)
+```
+
+**Uwaga**: wektoryzacja wielu przypadkach jest lepszym rozwiązaniem
+
+Przykład: Wyznacz pierwiastki liczb 1:10
+
+```{r}
+system.time(sqrt(1:10000000))
+system.time(sapply(1:10000000, sqrt))
+```
+
+
+## `vapply()`
+
+`vapply()` wymaga podania oczekiwanego **szablonu wyniku**. Jeśli zwrócona wartość nie pasuje do szablonu typem lub długością, funkcja zgłasza błąd — co czyni ją bezpieczniejszą od `sapply()`.
+
+Przykład: Wyznacz odchylenia standardowe kolumn w zbiorze iris
+
+```{r}
+vapply(iris[, 1:4], sd, FUN.VALUE = numeric(1))
+```
+
+Przykład: Wyznacz wartości z kolumn w zbiorze iris
+
+```{r}
+iris$Species <- as.character(iris$Species)
+```
+
+```{r}
+sapply(iris, max)
+```
+
+```{r}
+vapply(iris, max, FUN.VALUE = numeric(1))
+```
+
+
+
+Przykład: Wyznacz wektor z wartościami najczęściej występującymi w poszczególnych kolumnach
+
+```{r}
+
+```
+
+## `mapply()`
+
+`mapply()` stosuje funkcję do **równoległych elementów wielu obiektów** jednocześnie.
+
+Przykład: Niech w poniższych ramkach, w których są dane na temat dwóch wskaźników w 10 regionach obserwowanych przez kolejnych 5 lat. Dla każdego roku wyznacz współczynniki regresji liniowej rate_y~rate_x.
+
+```{r}
+rate_x <- as.data.frame(matrix(runif(50, 0, 1), nrow = 10))
+rate_y <- as.data.frame(matrix(rnorm(50, 0, 1), nrow = 10))
+colnames(rate_x) <- 2021:2025
+colnames(rate_y) <- 2021:2025
+```
+```{r}
+mapply("+", 1:10, 1:10) #dodaje do siebie odpowiednio elementy z tych dwóch wektorów 
+```
+```{r}
+#funkcja będzie budowała model liniowy
+mapply(\(x,y) coef(lm(y~x)), rate_x, rate_y)
+```
+
+# 2. Funkcje `Map`, `Filter`, `Reduce`
+
+## `Map()` — zastosuj funkcję równolegle
+
+`Map()` jest funkcyjnym odpowiednikiem `mapply(..., `SIMPLIFY = FALSE`)`.
+```{r}
+Map(\(x,y) coef(lm(y~x)), rate_x, rate_y) #to samo tylko zwraca wynik w postaci listy
+```
+
+
+
+## `Filter()` — przefiltruj elementy
+
+`Filter()` zatrzymuje tylko te elementy listy lub wektora, dla których **predykat** (*predicate*) — funkcja zwracająca `TRUE`/`FALSE` — daje wartość `TRUE`.
+
+Przykład: Zachowaj tylko kolumny numeryczne z iris
+
+```{r,error=TRUE}
+#opcje stawki można zmienić
+#nawet jeżeli w jakieś wstawce pojawi się błąd to pozostałe będą wykonywane
+```
+
+Przykład: Pozostaw tylko te kolumny numeryczne z iris, w których przynajmniej jedna wartość po standaryzacji przekracza 3 co do wartości bezwzględnej
+
+```{r}
+Filter(\(x) any(abs(x) >3), Filter(is.numeric, iris))
+```
+
+
+## `Reduce()` — redukuj do pojedynczej wartości
+
+`Reduce()` stosuje funkcję iteracyjnie do elementów listy lub wektora, akumulując wynik.
+
+Przykład: Wyznacz iloraz kolejnych 10 liczb naturalnych dodatnich
+
+```{r reduce_basic}
+Reduce("/", 1:10)
+Reduce("/", 1:10, accumulate = 1)
+```
+
+Przykład: Połącz ramki danych za pomocą klucza "id"
+
+```{r}
+df_list <- 
+  list(
+    x = data.frame(id = 1:10, x = rnorm(10)),
+    y = data.frame(id = 1:10, y = rnorm(10)),
+    z = data.frame(id = 1:10, z = rnorm(10))
+  )
+```
+
+```{r}
+Reduce(merge, df_list) #funkcja merge tylko na 2 ramkach danych
+```
+
+
+# Zadanie
+
+a. Wczytaj dane rent-poznan
+b. Sprawdź spójność kolumn pod względem klasy
+c. Pozostaw tylko te dzielnice, w których liczba obserwacji wynosi co najmniej 50
+d. Sprawdź które daty aktywacji są wspólne dla wszystkich zbiorów.
+e. Połącz zbiory do jednej ramki danych
+f. Sprawdź, czy w tych kolumnach są braki danych
+g. Zaprezentuj rozkład zmiennych typu logicznego za pomocą macierzy
+
+```{r}
+#dwie kropki aby wyjść (wyżej się przemieścić w kryptologu)
+sciezki <- list.files("../dane_surowe/rent-poznan/", full.names = TRUE)
+#zamiast pętli używamy lapply która będzie po kolei przechodzić przez pliki
+rent_list <- lapply(sciezki, readxl::read_xlsx) #te kropki potrzebne aby nie łądować biblioteki
+```
+
+```{r}
+#c
+rent_list <- Filter(\(df) nrow(df)>=50, rent_list)
+```
+
+```{r}
+#e
+rent_df <- Reduce(rbind, rent_list) #nie nadaje się do przetwarzania potokowego bo pierwszy argument nie jest zbiorem danych
+rent_df
+
+rent_df <- dplyr::bind_rows(rent_list) #wykonuje to samo gotowa funkcja w dplyr
+```
+
+```{r}
+#f
+# \(x) to własna napisana funkcja anonimowa
+#kolumny bez braku danych
+sapply(rent_df, \(x) any(is.na(x)))
+```
+
+```{r}
+# nie wiadomo czemu nie działa
+#Reduce(\(x) any(is.na(x)), rent_df)
+```
+
+```{r}
+#a c e f na raz
+library(purrr)
+list.files("../dane_surowe/rent-poznan/", full.names = TRUE) %>% 
+  map(readxl::read_xlsx) %>% 
+  purrr::keep(\(df) nrow(df) >=50) %>% 
+  list_rbind() %>% 
+  keep(\(x) any(is.na(x)))
+```
+
+
+
+
+
