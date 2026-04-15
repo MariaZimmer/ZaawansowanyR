@@ -5,6 +5,8 @@ format: html
 
 ```{r}
 library(stringr)
+library(dplyr)
+library(readxl)
 ```
 
 
@@ -154,12 +156,33 @@ x <- c("Przytulna kawalerka 30 mkw GARAŻ Winogrady", "Kawalerka Rataje BEZPOSRE
 Wczytaj dane z pliku "rent-poznan.xlsx".
 
 ```{r}
+sciezki <- list.files("../dane-surowe/rent-poznan/", full.names = TRUE)
+sciezki
+```
 
+```{r}
+rent <- lapply(sciezki, read_xlsx)
+rent <- bind_rows(rent)
+rent <- select(rent, ad_title, flat_area, flat_garage)
+rent
 ```
 
 Znajdź ogłoszenia w których występuje słowo: "garaż", "parking" lub "postojowe".
 
 ```{r}
+rent %>% 
+  filter(str_detect(ad_title, pattern = "garaż"))
+
+rent %>% 
+  filter(str_detect(ad_title, pattern = "garaż|Garaż|GARAŻ"))
+
+rent %>% 
+  filter(str_detect(ad_title, pattern = regex("garaż", ignore_case = TRUE)))
+
+rent %>% 
+  filter(str_detect(ad_title, pattern = regex("garaż|parking|postojowe", ignore_case = TRUE)))
+
+#str_conv()#zmiana kodowania znoakow aby moc wykluczyc polskie znaki ale do gpt do zweryfikowanai cymozna prosciej
 
 ```
 
@@ -167,23 +190,47 @@ Znajdź ogłoszenia w których znajduje się tekst z wektora x.
 
 ```{r}
 x <- c("garaż", "garaz", "gararz", "parking", "postoj")
+
+rent %>% 
+  filter(str_detect(ad_title, pattern = regex(str_c(x, collapse = "|"), ignore_case = TRUE)))
 ```
 
 Wyodrębnij powierzchnie mieszkania jako tekst składający się od dwóch do trzech cyfr a następnie opcjonalnie spacja oraz skrót "m2" lub "mkw", np. "30m2", "40 m2", "50mkw", "50 mkw".
 
 ```{r}
+str_extract(rent$ad_title, pattern = "\\d{2,3}")
+#z sheet wiemy ze \\d to cyfry ma siacagac i teraz w {} ile cyfr wiec may ze od 2 do 3 cyfr ma sciagac
+str_extract(rent$ad_title, pattern = "\\d{2,3}(m2|mkw)")
 
+```
+
+```{r}
+#to samo ale lepszy odczyt pod zajecia
+rent %>% 
+  filter(str_detect(rent$ad_title, pattern = "\\d{2,3}( |)(m2|mkw)"))#to moje
+rent %>% 
+  filter(str_detect(rent$ad_title, pattern = "\\d{2,3}( )?(m2|mkw)"))#znak zapytania ze moze sie powiac znak a nie musi
 ```
 
 Uwzględnij we poprzednim zadaniu miejsca dziesiętne w liczbie.
 
 ```{r}
+rent %>% 
+  filter(str_detect(ad_title, pattern = "\\d{2,3}((.|,)\\d{1,2})?( )?(m2|mkw)"))
+
+rent %>% 
+  mutate(flat_area_from_title = str_extract(ad_title, pattern = "\\d{2,3}((.|,)\\d{1,2})?( )?(m2|mkw)")) %>% 
+  filter(!is.na(flat_area_from_title))#zestawnie po przed doanie do rent nowej kolumny
 
 ```
 
 W poprzednim zadaniu pozostaw tylko liczbę.
 
 ```{r}
+rent %>%
+  mutate(flat_area_from_title = str_extract(ad_title, pattern = "\\d{2,3}((.|,)\\d{1,2})?( )?(m2|mkw)")) %>% 
+  mutate(flat_area_from_title_2 = str_extract(ad_title, pattern = "\\d{2,3}((.|,)\\d{1,2})?(?=( )?(m2|mkw))")) %>% 
+  filter(!is.na(flat_area_from_title))
 
 ```
 
