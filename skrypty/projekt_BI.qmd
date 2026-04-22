@@ -1,0 +1,35 @@
+---
+title: "projekt_BI"
+format: html
+---
+
+```{r}
+install.packages("haven")
+install.packages("tidyverse")
+install.packages("nonprobsvy")
+```
+
+
+```{r}
+library(readxl)
+library(haven)
+library(nonprobsvy)
+#library(data.table)
+#library(sjplot)
+```
+
+```{r}
+dane_bkl <- read_sav("../dane-surowe/proj_bi/Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
+dane_bkl
+```
+
+
+
+
+
+
+
+
+
+
+
