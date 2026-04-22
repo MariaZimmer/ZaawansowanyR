@@ -1,5 +1,7 @@
 ```{r}
 library(stringr)
+library(readxl)
+library(dplyr)
 ```
 
 Wytnij nazwę ulicy
@@ -100,25 +102,32 @@ x <- c("Przytulna kawalerka 30 mkw GARAŻ Winogrady", "Kawalerka Rataje BEZPOSRE
 Wczytaj dane z pliku "rent-poznan.xlsx".
 
 ```{r}
-
+sciezki <- list.files("../dane_surowe/rent-poznan/", full.names = TRUE)
+rent <- lapply(sciezki, read_xlsx)
+rent <- bind_rows(rent) #skleja ramki danych jedna po drugiejrent
+rent <- select(rent, ad_title, flat_area, flat_garage)
+head(rent)
 ```
 
 Znajdź ogłoszenia w których występuje słowo: "garaż", "parking" lub "postojowe".
 
 ```{r}
-
+rent %>% filter(str_detect(ad_title, pattern = "garaż | parking | postojowe"))
+rent %>% filter(str_detect(ad_title, pattern = regex("garaż | parking | postojowe", ignore_case = TRUE)))
 ```
 
 Znajdź ogłoszenia w których znajduje się tekst z wektora x.
 
 ```{r}
 x <- c("garaż", "garaz", "gararz", "parking", "postoj")
+rent %>% filter(str_detect(ad_title, pattern=regex(str_c(x, collapse = "|"))))
 ```
 
 Wyodrębnij powierzchnie mieszkania jako tekst składający się od dwóch do trzech cyfr a następnie opcjonalnie spacja oraz skrót "m2" lub "mkw", np. "30m2", "40 m2", "50mkw", "50 mkw".
 
 ```{r}
-
+str_extract(rent$ad_title, "\\d{2,3}")
+str_extract(rent$ad_title, "\\d{2,3}(m2|mkw)")
 ```
 
 Uwzględnij we poprzednim zadaniu miejsca dziesiętne w liczbie.
