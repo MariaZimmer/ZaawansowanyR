@@ -14,13 +14,17 @@ install.packages("nonprobsvy")
 library(readxl)
 library(haven)
 library(nonprobsvy)
+library(dplyr)
 #library(data.table)
 #library(sjplot)
 ```
 
 ```{r}
 dane_bkl <- read_sav("../dane-surowe/proj_bi/Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
-dane_bkl
+#zmienna y1 odsetek osób pracujących za granicą 
+#dane_bkl <- dane_bkl %>% mutate(y1 = as.integer(y1)) %>% mutate(m2 = as.integer(m2))
+# m2 to płec 1-kobieta 0-mężczyzna
+#cor(dane_bkl$y1, dane_bkl$m2, use = "complete.obs")
 ```
 
 
