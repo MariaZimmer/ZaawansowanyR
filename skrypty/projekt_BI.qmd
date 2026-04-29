@@ -14,6 +14,7 @@ install.packages("nonprobsvy")
 library(readxl)
 library(haven)
 library(nonprobsvy)
+library()
 #library(data.table)
 #library(sjplot)
 ```
@@ -23,6 +24,10 @@ dane_bkl <- read_sav("../dane-surowe/proj_bi/Poczona_baza_danych_z_badania_ludno
 dane_bkl
 ```
 
+```{r}
+cor(dane_bkl$y1, dane_bkl$m2, method = "pearson")
+
+```
 
 
 
