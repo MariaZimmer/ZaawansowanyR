@@ -1,0 +1,238 @@
+---
+title: "04-data-table"
+format: html
+---
+
+```{r}
+install.packages("arrow")
+```
+
+
+```{r}
+library(data.table)
+library(arrow)#read_parquet
+```
+
+# Wczytywanie danych
+
+```{r}
+url_taxi  <- "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet"
+url_zones <- "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+
+taxi <- read_parquet("https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet")
+zones <- fread("https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv")
+```
+```{r}
+class(taxi)
+class(zones)
+```
+
+```{r}
+setDT(taxi)
+class(taxi)
+```
+
+```{r}
+head(taxi)
+head(zones)
+```
+
+
+# Filtrowanie
+
+Wybierz wszystkie kursy, których łączna kwota (total_amount) przekroczyła $100. Wyświetl liczbę takich kursów. 
+Wyświetl 10 najdroższych z nich (posortowanych malejąco po total_amount), pokazując kolumny: total_amount, trip_distance, passenger_count.
+
+Znajdź kursy spełniające wszystkie poniższe warunki: 
+- dystans (trip_distance) w przedziale [2, 15] mil,
+- płatność kartą (payment_type == 1),
+- opłata podstawowa (fare_amount) większa niż $10. 
+Ile takich kursów jest? 
+Jaki jest ich udział procentowy w całości zbioru?
+
+```{r}
+#rozwiazania data.frame
+taxi[taxi$total_amount > 100, ]
+
+```
+
+```{r}
+#rozwiazanie data.table
+taxi[total_amount > 100] |> nrow()
+nrow(taxi[total_amount >100])
+
+taxi[total_amount > 100][order(~total_amount)][1:10][,c("total_amount", "trip_distance")]
+
+taxi[total_amount > 100][order(~total_amount)][1:10][,.(total_amount, trip_distance)]
+
+taxi |>
+_[total_amount > 100] |> 
+_[order(~total_amount)] |> 
+_[1:10] |> 
+_[,.(total_amount, trip_distance, passenger_count)]
+
+#Cos nei dzila ale kod podobny
+```
+
+```{r}
+taxi[trip_distance %between% c(2, 15)][payment_type == 1][fare_amount > 10]
+
+taxi |> 
+  _[trip_distance %between% c(2, 15)] |>
+  _[payment_type == 1] |>
+  _[fare_amount > 10] |>
+  _[, .N]#zwraca liczbe wierszy
+```
+
+
+# Operacje na kolumnach
+
+Oblicz dla całego zbioru (bez grupowania):
+- średnią i medianę trip_distance,
+- maksymalny tip_amount,
+- łączny przychód (suma total_amount),
+- liczbę wszystkich kursów (.N).
+Wynik powinien być jednym wierszem tabeli z nazwanymi kolumnami.
+
+Dla kursów płaconych kartą (payment_type == 1) oblicz:
+- średni napiwek (tip_amount),
+- średni napiwek jako procent opłaty podstawowej (tip_amount / fare_amount * 100) — pomiń kursy z fare_amount <= 0,
+- odsetek kursów, w których napiwek wyniósł $0.
+
+```{r}
+taxi[, mean(trip_distance)]
+
+taxi[, .(trip_distance_avg = mean(trip_distance), trip_distance_med = median(trip_distance))]
+taxi[, .(trip_distance_avg = mean(trip_distance), trip_distance_med = median(trip_distance), .N)]#tu jeszce na max i nas sum
+
+```
+
+```{r}
+taxi[fare_amount > 0, .(tip_amount_avg = mean(tip_amount), tip_percent_avg = mean(tip_amount / fare_amount * 100), sum(tip_amount == 0)/.N*100)]
+#iczba obserwacji
+```
+
+
+# Grupowanie i specjalne symbole
+
+Pogrupuj kursy według metody płatności (payment_type) i oblicz:
+- liczbę kursów (.N),
+- średnią łączną kwotę (total_amount),
+- łączny przychód (sum(total_amount)),
+- średni napiwek.
+Posortuj wynik malejąco po liczbie kursów. 
+Jak interpretujesz różnicę w napiwku między płatnością kartą a gotówką?
+
+```{r}
+taxi[, .N, by = payment_type]
+taxi[, .(trip_number = .N), keyby = payment_type]#jakeis dziwne sortowanie czy cos
+
+```
+
+```{r}
+taxi[, .(trip_number = .N, total_amount_avg = mean(total_amount), total_amount_sum = sum(total_amount)), by = payment_type]#orderby na koniec ale nei zdazylem spisac
+```
+
+```{r}
+taxi[, .SD[1], by = PULocationID]
+```
+
+
+Oblicz liczbę kursów i średnią kwotę dla każdej kombinacji payment_type × VendorID.
+
+```{r}
+taxi[, .(.N, total_amount_sum = mean(total_amount)), keyby = .(payment_type, VendorID)]
+```
+
+```{r}
+cols <- c("fare_amount", "tip_amount", "trip_distance", "total_amount")
+taxi[, lapply(.SD, mean), by = PULocationID, .SDcols = cols]
+```
+
+
+Dla każdej strefy odbioru (PULocationID) oblicz jednocześnie wartość średniej arytmetycznej dla czterech kolumn: fare_amount, tip_amount, trip_distance, total_amount. 
+Posortuj wynik malejąco po średnim total_amount.
+
+Dla każdej dzielnicy odbioru (po uprzednim dołączeniu kolumny Borough ze słownika zones) znajdź 5 najdłuższych kursów (wg trip_distance). 
+Wynikowa tabela powinna zawierać kolumny: Borough, trip_distance, total_amount, tip_amount.
+
+Znajdź wszystkie strefy odbioru (PULocationID), które spełniają jednocześnie:
+- co najmniej 5 000 kursów w miesiącu,
+- średni napiwek powyżej $3,
+- odsetek kursów gotówkowych poniżej 20%.
+Dołącz nazwy stref z tabeli zones i wyświetl wynik.
+
+
+# Modyfikacja przez referencję - operator :=
+
+Dodaj do tabeli taxi następujące kolumny:
+- czas_min — czas kursu w minutach (różnica między dropoff a pickup),
+- godzina_odbioru — godzina rozpoczęcia kursu (0–23),
+- dzien_tyg — numer dnia tygodnia (1 = niedziela, 7 = sobota),
+- data_odbioru — sama data (bez czasu) jako Date.
+
+Dodaj kolumnę kategoria_dystansu przyjmującą wartości:
+- "krótki" — poniżej 2 mil,
+- "średni" — od 2 do 10 mil,
+- "długi" — powyżej 10 mil.
+Następnie dodaj kolumnę taryfa_nazwa, która zamienia RatecodeID na etykiety tekstowe (Standard / JFK / Newark / Nassau-Westchester / Negocjowana / Grupowa / Nieznana).
+Wyświetl rozkład obu nowych kolumn przez.
+
+Wyeliminuj błędne wartości, które występują w zbiorze:
+- Ustaw czas_min na NA dla kursów krótszych niż 1 minuta lub dłuższych niż 180 minut.
+- Ustaw trip_distance na NA dla kursów z dystansem równym 0 lub ujemnym.
+- Ustaw fare_amount na NA dla opłat ujemnych.
+Po czyszczeniu wyświetl odsetek braków (NA) w każdej z tych trzech kolumn.
+
+
+# Klucze
+
+Ustaw klucz tabeli taxi na kolumnie PULocationID. Następnie:
+- Pobierz wszystkie kursy startujące ze strefy 132.
+- Pobierz kursy ze stref 132 i 138.
+- Oblicz dla każdej z tych dwóch stref: liczbę kursów i średnią kwotę.
+
+
+# Łączenie zbiorów
+
+Dołącz do tabeli taxi kolumny Borough i Zone ze słownika zones dla strefy odbioru (PULocationID). 
+Nowe kolumny nazwij pu_borough i pu_zone.
+
+Dołącz informacje o strefach docelowych (DOLocationID) z tabeli zones. 
+Na podstawie połączonej tabeli oblicz top 10 najczęstszych tras, uwzględniając tylko kursy w granicach Manhattanu (zarówno odbiór jak i dowóz w dzielnicy Manhattan). 
+Pokaż też średnią kwotę dla każdej trasy.
+
+Dołącz klasę (klasa) do tabeli taxi na podstawie total_amount. Oblicz rozkład kursów po klasach (liczba i procent).
+
+
+# Zmiana układu ramki danych
+
+Stwórz tabelę przestawną, gdzie:
+- wiersze = godzina odbioru (godzina_odbioru, 0–23),
+- kolumny = dzień tygodnia (dzien_tyg, 1–7),
+- wartości = liczba kursów.
+Wypełnij braki zerami. 
+W którym dniu i o której godzinie jest szczyt ruchu?
+
+Stwórz tabelę przestawną, gdzie wiersze to dzielnice (pu_borough), kolumny to metody płatności (payment_type), a wartości to jednocześnie liczba kursów i średnia kwota.
+
+Weź wynik z poprzedniego zadania i przekształć go z powrotem do formatu długiego. 
+Wynikowa tabela powinna mieć kolumny: godzina_odbioru, dzien_tyg, n_kursow. 
+Sprawdź, że liczba wierszy zgadza się z oryginalnym zbiorem.
+
+
+# Programowanie z data.table
+
+Masz wektor nazw kolumn: cols <- c("fare_amount", "tip_amount", "total_amount", "trip_distance").
+Wyświetl tylko kolumny z tego wektora.
+Oblicz dla każdej kolumny z tego wektora średnią i odchylenie standardowe grupując po pu_borough.
+
+Napisz funkcję agreguj(dt, kolumna_wartosci, kolumna_grup), która:
+- oblicza mean(), median(), sd() i sum() kolumny kolumna_wartosci,
+- grupuje wynik po kolumna_grup,
+- zwraca posortowaną malejąco tabelę wynikową.
+
+Napisz funkcję top_n_tras(dt, n, borough), która:
+- Filtruje kursy startujące z podanej dzielnicy,
+- Liczy kursy dla każdej pary pu_zone → do_zone,
+- Zwraca n najczęstszych tras z kolumnami: pu_zone, do_zone, n_kursow, srednia_kwota.
