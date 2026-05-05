@@ -526,7 +526,8 @@ Sprawdzić, czy nowe wagi odtwarzają wartości globalne podane w `pop_totals` -
 
 ```{r}
 ## walidacja kalibracji do statusu (sekcja a.i)
-check_balance(ipw_wiek)
+check_balance(~status-1,ipw_status)
+check_balance(~wiek-1,ipw_wiek)
 ```
 :::
 
