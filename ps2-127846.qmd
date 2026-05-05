@@ -305,10 +305,14 @@ Obliczyć odsetki kategorii **czterech** zmiennych w próbie BKL:
 ```{r}
 ## Tutaj kod (R)
 ## Wskazówka: prop.table(table(...)) albo podobne
-prop.table(table(bkl$status))
-prop.table(table(bkl$plec))
-prop.table(table(bkl$wiek))
-prop.table(table(bkl$wyksztalcenie))
+ods_status <- prop.table(table(bkl$status))
+ods_plec <- prop.table(table(bkl$plec))
+ods_wiek <- prop.table(table(bkl$wiek))
+ods_wyk <- prop.table(table(bkl$wyksztalcenie))
+ods_status
+ods_wiek
+ods_wiek
+ods_wyk
 
 ```
 :::
@@ -360,6 +364,33 @@ Zestawić w jednej (lub osobnych) tabelach odsetki BKL vs oficjalne BAEL dla ka�
 
 ```{r}
 ## Tutaj kod (R)
+bael_status <- c("Pracujący" = 56.30,
+                 "Bezrobotny" = 1.67,
+                 "Bierny zawodowo" = 42.03)
+
+bael_plec <- c("mężczyźni" = 47.90,
+               "kobiety" = 52.10)
+
+bael_wiek <- c("15-24" = 11.35,
+               "25-34" = 15.47,
+               "35-44" = 19.03,
+               "45-59/64" = 26.92,
+               "60/65-89" = 27.22)
+
+bael_wykszt <- c("wyższe" = 25.67,
+                 "policealne i średnie zawodowe" = 25.63,
+                 "średnie ogólnokształcące" = 10.11,
+                 "zasadnicze zawodowe/branżowe" = 23.07,
+                 "gimnazjalne i poniżej" = 15.51)
+
+
+data.frame(
+    #zmienna = nazwa_zmiennej,
+    #kategoria = kategorie,
+    BKL_proc = as.numeric(bkl_odsetki[kategorie]),
+    BAEL_proc = bael_odsetki,
+    roznica_BKL_minus_BAEL = as.numeric(bkl_odsetki[kategorie]) - bael_odsetki
+  )
 
 ```
 :::
@@ -461,6 +492,24 @@ Wartość globalna dla `pleckobiety` (suma wierszowa dla kobiet): 7608 + 232 + 7
 ## Tutaj kod (R) -- zbudować pop_totals_wiek (z dummies dla wiek + status + plec),
 ##                  uruchomić nonprob() z selection = ~ wiek + status + plec,
 ##                  wynik zapisać do `ipw_wiek`.
+colnames(model.matrix(~ wiek + status + plec, data = bkl))
+
+pop_totals_wiek <- c(`(Intercept)` = 29806,
+                       `wiek25-34` = 4612,
+                       `wiek35-44` = 5672,
+                       `wiek45-59/64` = 8025,
+                       `wiek60/65-89` = 8115,
+                       `statusBezrobotny`      = 497,
+                       `statusBierny zawodowo` = 12529,
+                       `pleckobiety` = 15530)
+
+ipw_wiek <- nonprob(selection = ~ wiek + status + plec,
+                      target = ~ n1,
+                      pop_totals = pop_totals_wiek,
+                      data = bkl,
+                      method_selection = "logit",
+                      control_selection = control_sel(est_method = "gee"))
+ipw_wiek
 
 ```
 :::
@@ -477,6 +526,7 @@ Sprawdzić, czy nowe wagi odtwarzają wartości globalne podane w `pop_totals` -
 
 ```{r}
 ## walidacja kalibracji do statusu (sekcja a.i)
+check_balance(ipw_wiek)
 ```
 :::
 
