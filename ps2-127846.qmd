@@ -13,6 +13,9 @@ execute:
 lang: pl
 ---
 
+
+# Numer albumu: 127846
+
 ## Instrukcje
 
 - Można użyć **R** lub **Python** (wybrać jeden język i stosować konsekwentnie).
@@ -101,15 +104,7 @@ library(haven)        ## wczytanie pliku .sav
 library(dplyr)
 library(survey)
 library(nonprobsvy)   ## kalibracyjny IPW
-```
-
-### Python
-
-```{python}
-import pyreadstat       ## wczytanie pliku .sav
-import pandas as pd
-import numpy as np
-from scipy import stats
+library(vcd)
 ```
 :::
 
@@ -135,25 +130,6 @@ bkl <- read_sav("bkl-2021.sav",
                 col_select = c("id", "m2", "wiek_10k", "wykszt_7k",
                                "BAEL_sytzaw", "n1"), user_na = TRUE)
 head(bkl)
-```
-
-### Python
-
-```{python}
-import os, urllib.request
-
-url = "https://www.parp.gov.pl/images/publications/BKL/nowy-uklad/Baza_danych_z_badania_ludnoci_BKL_edycja_2021_SAV-SPSS.sav"
-if not os.path.exists("bkl-2021.sav"):
-    urllib.request.urlretrieve(url, "bkl-2021.sav")
-
-## user_missing=True -- żeby kategoria 2 w BAEL_sytzaw (nieaktywni) była wczytana
-##                     jako wartość, a nie jako NaN
-bkl, meta = pyreadstat.read_sav(
-    "bkl-2021.sav",
-    usecols=["id", "m2", "wiek_10k", "wykszt_7k", "BAEL_sytzaw", "n1"],
-    user_missing=True
-)
-bkl.head()
 ```
 :::
 
@@ -243,69 +219,6 @@ table(bkl$wyksztalcenie)
 table(bkl$status)
 table(bkl$n1)
 ```
-
-### Python
-
-```{python}
-## płeć i status BAEL
-bkl["plec"] = bkl["m2"].map({0: "mężczyźni", 1: "kobiety"})
-
-## BAEL_sytzaw: 0/1/2 -> Pracujący/Bezrobotny/Bierny zawodowo
-## (z user_missing=True kategoria 2 jest widoczna)
-bkl["status"] = bkl["BAEL_sytzaw"].map(
-    {0: "Pracujący", 1: "Bezrobotny", 2: "Bierny zawodowo"}
-)
-
-## grupa wiekowa (kategoria 9 = 60-64 dzieli się po płci)
-def map_wiek(wiek_10k, m2):
-    if wiek_10k == 1:                  return "15-24"   ## 18-24
-    if wiek_10k in (2, 3):             return "25-34"
-    if wiek_10k in (4, 5):             return "35-44"
-    if wiek_10k in (6, 7, 8):          return "45-59/64"
-    if wiek_10k == 9 and m2 == 0:      return "45-59/64"  ## M 60-64
-    if wiek_10k == 9 and m2 == 1:      return "60/65-89"  ## K 60-64
-    if wiek_10k == 10:                 return "60/65-89"
-    return np.nan
-
-bkl["wiek"] = bkl.apply(lambda r: map_wiek(r["wiek_10k"], r["m2"]), axis=1)
-
-## wykształcenie -> 5 kategorii BAEL
-wyksztal_map = {
-    1: "gimnazjalne i poniżej",
-    2: "zasadnicze zawodowe/branżowe",
-    3: "średnie ogólnokształcące",
-    4: "policealne i średnie zawodowe",
-    5: "policealne i średnie zawodowe",
-    6: "wyższe",
-    7: "wyższe",
-}
-bkl["wyksztalcenie"] = bkl["wykszt_7k"].map(wyksztal_map)
-
-## n1: -3 (brak danych) i -1 (NDT) -> NA
-bkl["n1"] = bkl["n1"].replace({-3: np.nan, -1: np.nan})
-
-## uporządkowane kategorie (zgodne z BAEL)
-bkl["plec"] = pd.Categorical(bkl["plec"],
-    categories=["mężczyźni", "kobiety"])
-bkl["status"] = pd.Categorical(bkl["status"],
-    categories=["Pracujący", "Bezrobotny", "Bierny zawodowo"])
-bkl["wiek"] = pd.Categorical(bkl["wiek"],
-    categories=["15-24", "25-34", "35-44", "45-59/64", "60/65-89"])
-bkl["wyksztalcenie"] = pd.Categorical(bkl["wyksztalcenie"],
-    categories=["wyższe",
-                "policealne i średnie zawodowe",
-                "średnie ogólnokształcące",
-                "zasadnicze zawodowe/branżowe",
-                "gimnazjalne i poniżej"])
-
-## zostawiamy tylko kolumny zmapowane do BAEL + zmienną wynikową n1,
-## a następnie usuwamy wiersze z brakami w tych kolumnach
-bkl = bkl[["plec", "wiek", "wyksztalcenie", "status", "n1"]].dropna()
-
-print(bkl.head())
-for col in ["plec", "wiek", "wyksztalcenie", "status", "n1"]:
-    print(bkl[col].value_counts())
-```
 :::
 
 
@@ -323,14 +236,18 @@ Dla każdej pary (`n1` × zmienna grupująca) zbudować tabelę liczebności ora
 ```{r}
 ## Tutaj kod (R)
 ## Wskazówka: table(), prop.table(), addmargins()
-
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
-## Wskazówka: pd.crosstab(..., normalize="index")
+tab1 <- table(bkl$n1, bkl$plec)
+tab2 <- table(bkl$n1, bkl$wiek)
+tab3 <- table(bkl$n1, bkl$wyksztalcenie)
+tab4 <- table(bkl$n1, bkl$status)
+tab1
+tab2
+tab3
+tab4
+prop.table(tab1, margin = 2)
+prop.table(tab2, margin = 2)
+prop.table(tab3, margin = 2)
+prop.table(tab4, margin = 2)
 
 ```
 :::
@@ -349,14 +266,14 @@ Dla każdej z czterech tabel:
 ```{r}
 ## Tutaj kod (R)
 ## Wskazówka: chisq.test(); pakiet vcd
-
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
-## Wskazówka: stats.chi2_contingency(); V Craméra wyliczyć ręcznie
+chisq.test(tab1)
+assocstats(tab1)
+chisq.test(tab2)
+assocstats(tab2)
+chisq.test(tab3)
+assocstats(tab3)
+chisq.test(tab4)
+assocstats(tab4)
 
 ```
 :::
@@ -388,14 +305,10 @@ Obliczyć odsetki kategorii **czterech** zmiennych w próbie BKL:
 ```{r}
 ## Tutaj kod (R)
 ## Wskazówka: prop.table(table(...)) albo podobne
-
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
-## Wskazówka: bkl["status"].value_counts(normalize=True)
+prop.table(table(bkl$status))
+prop.table(table(bkl$plec))
+prop.table(table(bkl$wiek))
+prop.table(table(bkl$wyksztalcenie))
 
 ```
 :::
@@ -447,13 +360,6 @@ Zestawić w jednej (lub osobnych) tabelach odsetki BKL vs oficjalne BAEL dla ka�
 
 ```{r}
 ## Tutaj kod (R)
-
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
 
 ```
 :::
@@ -519,52 +425,6 @@ ipw_status <- nonprob(selection = ~ status,
                       control_selection = control_sel(est_method = "gee"))
 ipw_status
 ```
-
-### Python
-
-```{python}
-## nonprobsvy nie ma bezpośredniego odpowiednika -- rozwiązanie GEE liczymy
-## ręcznie przez fsolve, analogicznie jak w 04-ipw-2.py / 05-ipw-cwiczenie.py
-
-import statsmodels.api as sm
-from scipy.optimize import fsolve
-from scipy.special import expit
-
-## wartości globalne BAEL Q4 2021 (w tys.)
-N_pop = 16780 + 497 + 12529   # = 29806
-
-pop_totals_status = {
-    "const":                  N_pop,
-    "status_Bezrobotny":      497,
-    "status_Bierny zawodowo": 12529,
-}
-
-## macierz projektowa dla zmiennej status
-admin_dum = pd.get_dummies(bkl[["status"]], columns=["status"],
-                           dtype=float, drop_first=True)
-X_admin_status   = sm.add_constant(admin_dum).values.astype(float)
-col_names_status = ["const"] + sorted(admin_dum.columns.tolist())
-
-## wektor wartości globalnych w kolejności kolumn macierzy projektowej
-tau_x_status = np.array([pop_totals_status.get(c, 0) for c in col_names_status])
-
-## równanie GEE:  G(gamma) = sum_{S_A} x_i / pi(x_i, gamma) - tau_x = 0
-def gee_eq_status(gamma):
-    pi_a = np.clip(expit(X_admin_status @ gamma), 1e-10, 1 - 1e-10)
-    return (X_admin_status / pi_a[:, None]).sum(axis=0) - tau_x_status
-
-gamma_status = fsolve(gee_eq_status, np.zeros(X_admin_status.shape[1]))
-ps_status    = expit(X_admin_status @ gamma_status)
-w_status     = 1.0 / ps_status
-
-## estymator HT (jak w nonprob() w R): mu = sum(w * y) / N_pop
-mu_n1_status = np.sum(w_status * bkl["n1"].values) / N_pop
-
-print(f"IPW-GEE do statusu BAEL:  mu_n1 = {mu_n1_status:.4f}")
-print(f"sum(wagi) = {w_status.sum():.0f}  (powinno być {N_pop})")
-print("gamma:")
-print(pd.Series(gamma_status, index=col_names_status).round(4))
-```
 :::
 
 #### (ii) Kalibracja do grupy wiekowej + statusu BAEL + płci
@@ -603,13 +463,6 @@ Wartość globalna dla `pleckobiety` (suma wierszowa dla kobiet): 7608 + 232 + 7
 ##                  wynik zapisać do `ipw_wiek`.
 
 ```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
-
-```
 :::
 
 
@@ -624,13 +477,6 @@ Sprawdzić, czy nowe wagi odtwarzają wartości globalne podane w `pop_totals` -
 
 ```{r}
 ## walidacja kalibracji do statusu (sekcja a.i)
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python) -- ręczna agregacja wag w grupach
-
 ```
 :::
 
@@ -656,13 +502,6 @@ rbind(
   "do BAEL"               = extract(ipw_status),
   "do wiek + BAEL + płeć" = extract(ipw_wiek)
 )
-```
-
-### Python
-
-```{python}
-## Tutaj kod (Python)
-
 ```
 :::
 
