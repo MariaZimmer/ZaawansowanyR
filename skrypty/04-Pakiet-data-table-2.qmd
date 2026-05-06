@@ -1,0 +1,172 @@
+---
+title: "04-Pakiet-data-table-2"
+format: html
+---
+
+Wczytaj pakiety
+```{r}
+library(dplyr)
+library(data.table)
+library(arrow)
+```
+
+Wczytaj dane
+```{r}
+url_taxi  <- "https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet"
+url_zones <- "https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv"
+
+
+taxi <- read_parquet("https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet")
+
+zones <- read.csv("https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv")
+```
+
+Zamień wczytane ramki danych do obiektu typu data.table
+```{r}
+setDT(taxi)
+setDT(zones)
+
+class(taxi)
+class(zones)
+```
+
+Wybierz 5 pierwszych wierszy ze zbioru taxi
+```{r}
+taxi[1:5,]
+taxi[1:5]#w data table nie trzeba dawac tego ,
+```
+
+Wybierz 5 obserwacji o największych opłatach (fare_amount)
+```{r}
+taxi[order(-fare_amount)][1:5]
+taxi |> 
+  _[order(-fare_amount)] |>
+  _[1:5]
+```
+
+Wybierz pierwszą obserwację z każdej lokalizacji (PULocationID)
+```{r}
+taxi[,nrow(.SD), by = PULocationID]
+#.SD data.table w data.table, dla kazdej grupy jaka jest liczba wierszy
+taxi[,.SD[1], by = PULocationID]
+# z akdej ramki danych biezemy 1 wiersz bo do grupuje nam na osbne ranki danych wedlug tego location
+taxi[,.SD[1], keyby = PULocationID]
+#tu mamy posortowena weflug znienej grupujacej dodatkow?
+```
+
+Z każdej lokalizacji wybierz losowo 1 obserwację
+```{r}
+taxi[, .SD[sample(.N, 1)], by = PULocationID]
+#sample loswanie .N liczba wierszy w zborze SD i z tej liczby 1 obserwacje
+```
+
+Z każdej lokalizacji (PULocationID) wybierz obserwację o największej opłacie (fare_amount)
+```{r}
+taxi[order(-fare_amount)][,.SD[1], by = PULocationID]
+#najpierw sortujemuy a potem wybierami 1 obserwacje wedlug typu lokalizacji
+```
+
+Wybierz obserwacje o typie płatności 1
+```{r}
+#taxi$payment_type == 1 #tak w data frame
+taxi[payment_type == 1]
+```
+
+Wybierz obserwacje o dystansie z przedziału [5,10]
+```{r}
+taxi[trip_distance >= 5 & trip_distance <= 10]
+taxi[trip_distance %between% c(5, 10)]#to drugie szybcsze jak duo warunkow?
+```
+
+Wybierz kolumnę PULocationID. Pozostaw pierwszych 10 obserwacji
+```{r}
+taxi[1:10, .(PULocationID)]#wdata fraem to "" dodatkow, przed, ile obsewacji zosawiamy, jak doamy . to mamy liste
+```
+
+Wybierz kolumny PULocationID i DOLacationID
+```{r}
+taxi[1:10, .(PULocationID, DOLocationID)]
+taxi[1:10, c("PULocationID", "DOLocationID")]
+cols <- c("PULocationID", "DOLocationID")
+taxi[, ..cols]#i teraz 2x . aby wykorzystac wektor
+```
+
+Wybierz kolumny typu numeric
+```{r}
+taxi[, .SD, .SDcols = is.numeric]#wybralismy te kolumny kotre maj typ numeric
+```
+
+Wyznacz liczbę obserwacji w podziale na PULocation
+```{r}
+taxi[, .N, by = PULocationID]
+taxi[, .N, by = .(PULocationID, payment_type)]
+taxi[, .N, by = c("PULocationID", "payment_type")]
+
+```
+
+Wyznacz średnią z kolumny fare_amount w podziale na PULocation
+```{r}
+
+```
+
+Wyznacz średnią z wszystkich kolumn numerycznych w podziale na PULocation
+```{r}
+
+```
+
+Wyznacz odsetek przejazdów z payment_type == 1 w podziale na PULocationID i payment_type. 
+```{r}
+taxi[, .(fare_amount_avg = mean(fare_amount)), by = .(PULocationID, payment_type)]#jak nazwe dac kolumnie to dac jako iliste i wtedy nadac nazwe
+```
+
+Pozostaw obserwacje ze stref, w których payment_type == 1 stanowi ponad 80%.
+```{r}
+taxi[, if (mean(payment_type == 1) > 0.8) .SD else NULL, by = PULocationID]
+```
+
+
+Utwórz kolumnę z czasem przejazdu
+```{r}
+
+```
+
+Utwórz kolumnę z rokiem i miesiącem
+```{r}
+taxi[, rok := year(tpep_pickup_datetime)]#:= tworzymy badź nadpisujemy kolunę
+head(taxi)
+```
+
+
+```{r}
+taxi[, ":="(rok = year(tpep_pickup_datetime), miesiac = month(tpep_pickup_datetime))]
+head(taxi)
+```
+
+Usuń kolumne z poprzedniego zadania
+```{r}
+taxi[, rok := NULL]
+taxi[, miesiac := NULL]
+head(taxi)
+```
+
+Utwórz kolumnę z przeciętną opłatą fare_amount w podziale na dzień odbioru
+```{r}
+
+```
+
+
+Zamień ujemne fare_amount na NA
+```{r}
+taxi[fare_amount < 0, fare_amount := NA]
+head(taxi)
+```
+
+Dołącz do zbioru taxi kolumny Borough i Zone ze zbioru zones
+```{r}
+
+```
+
+Wybierz tylko obserwację z payment_type == 1. Zamień ujemne wartości w total_amount na 0. Wyznacz przeciętną wartość total_amount w podziale na PULocation. Posortuj zbiór malejąco wg wartości z poprzedniego kroku. 
+```{r}
+
+```
