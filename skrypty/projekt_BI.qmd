@@ -15,8 +15,6 @@ library(readxl)
 library(haven)
 library(nonprobsvy)
 library(dplyr)
-#library(data.table)
-#library(sjplot)
 ```
 
 ```{r}
@@ -136,9 +134,4 @@ Tylko w opisie rozdziel je na dwie grupy:
 
 zmienne społeczno-demograficzne: wiek_4k, miejsce, woj_clean;
 zmienne dodatkowe związane z mobilnością i kompetencjami: g2_3, k24, w9_1.
-
-
-
-
-
 
