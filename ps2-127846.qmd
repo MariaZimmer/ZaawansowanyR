@@ -1,16 +1,10 @@
 ---
-title: "Zadanie domowe 2: Kalibracyjny IPW na danych BKL"
-author: "Badania Internetowe 2025/26"
+title: "ps1-127846"
 format:
   html:
-    embed-resources: true
-    number-sections: true
-    df-print: kable
+    self-contained: true
 execute:
-  eval: false
-  message: false
-  warning: false
-lang: pl
+  echo: true
 ---
 
 
@@ -251,7 +245,7 @@ prop.table(tab4, margin = 2)
 
 ```
 :::
-
+W analizie zastosowano odsetki kolumnowe, ponieważ pokazuje on odsetki w podzialne na pracę na czarno/szaro
 
 ### b) Test niezależności i miara siły związku (2 pkt)
 
@@ -280,13 +274,13 @@ assocstats(tab4)
 
 **Odpowiedź (interpretacja):**
 
-- Płeć vs `n1`: V Craméra = *...*, p = *...*
-- Grupa wieku vs `n1`: V Craméra = *...*, p = *...*
-- Wykształcenie vs `n1`: V Craméra = *...*, p = *...*
-- Status BAEL vs `n1`: V Craméra = *...*, p = *...*
+- Płeć vs `n1`: V Craméra = *0.075*, p = *0.00018683*
+- Grupa wieku vs `n1`: V Craméra = *0.197*, p = *9.992e-16*
+- Wykształcenie vs `n1`: V Craméra = *0.121*, p = *2.4005e-06*
+- Status BAEL vs `n1`: V Craméra = *0.093*, p = *5.6743e-04*
 
-Która zmienna grupująca jest **najsilniej** powiązana z pracą nierejestrowaną? *...*
-
+Która zmienna grupująca jest **najsilniej** powiązana z pracą nierejestrowaną? *wiek*
+VCramera = 0.197
 
 ## Część B: Zadanie 2 -- Porównanie odsetków BAEL z oficjalnymi danymi (3 punkty)
 
@@ -537,9 +531,9 @@ Zestawić oszacowanie odsetka pracujących na czarno/szaro (`n1 = 1`) w trzech w
 
 | Metoda | $\hat{\mu}_{n1}$ |
 |---|---:|
-| BKL bez wag | *...* |
-| Kalibracja IPW do statusu BAEL | *...* |
-| Kalibracja IPW do wieku + statusu + płci | *...* |
+| BKL bez wag | *0.04240983* |
+| Kalibracja IPW do statusu BAEL | *0.03956906* |
+| Kalibracja IPW do wieku + statusu + płci | *0.04070381* |
 
 ::: panel-tabset
 ### R
@@ -557,3 +551,5 @@ rbind(
 :::
 
 **Odpowiedź (wnioski):** *2--3 zdania: jak kalibracja (po statusie / po wieku + statusie + płci) zmienia oszacowanie odsetka `n1`? Która kalibracja daje większy efekt? Czy kierunek zmian jest zgodny z różnicami z Części B?*
+
+Kalibracja i po statusie i po wieku daje podobne wyniki, jednakże status jest lepszy. 
