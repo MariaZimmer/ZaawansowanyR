@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="pl" xml:lang="pl"><head>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
 <meta name="generator" content="quarto-1.6.42">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Badania Internetowe 2025/26">
 
-<title>Zadanie domowe 2: Kalibracyjny IPW na danych BKL</title>
+<title>ps1-127846</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -3227,19 +3226,13 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Zadanie domowe 2: Kalibracyjny IPW na danych BKL</h1>
+<h1 class="title">ps1-127846</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
-    <div>
-    <div class="quarto-title-meta-heading">Autor</div>
-    <div class="quarto-title-meta-contents">
-             <p>Badania Internetowe 2025/26 </p>
-          </div>
-  </div>
     
   
     
@@ -3250,10 +3243,10 @@ window.Quarto = {
 </header>
 
 
-<section id="numer-albumu-127846" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Numer albumu: 127846</h1>
-<section id="instrukcje" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="instrukcje"><span class="header-section-number">1.1</span> Instrukcje</h2>
+<section id="numer-albumu-127846" class="level1">
+<h1>Numer albumu: 127846</h1>
+<section id="instrukcje" class="level2">
+<h2 class="anchored" data-anchor-id="instrukcje">Instrukcje</h2>
 <ul>
 <li>Można użyć <strong>R</strong> lub <strong>Python</strong> (wybrać jeden język i stosować konsekwentnie).</li>
 <li><strong>Łącznie: 10 punktów. Termin: tydzień od daty zadania.</strong></li>
@@ -3294,8 +3287,8 @@ Wymagania dotyczące oddania pracy
 </div>
 </div>
 </section>
-<section id="opis-zadania" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="opis-zadania"><span class="header-section-number">1.2</span> Opis zadania</h2>
+<section id="opis-zadania" class="level2">
+<h2 class="anchored" data-anchor-id="opis-zadania">Opis zadania</h2>
 <p>Celem zadania jest przećwiczenie IPW z wykorzystaniem badania <strong>Bilansu Kapitału Ludzkiego (BKL) edycja 2021</strong> pod kątem powiązania płci, grupy wieku, wykształcenia oraz statusu na rynku pracy (BAEL) ze zmienną opisującą pracę nierejestrowaną (<code>n1</code>). Dodatkowo porównujemy odsetki BAEL wyznaczone z BKL z oficjalnymi danymi BAEL (GUS) i stosujemy <strong>kalibracyjny estymator IPW</strong>, traktując BKL jako próbę nielosową, a oficjalne oszacowania BAEL jako dane referencyjne (populacyjne).</p>
 <p><strong>Mój nr albumu:</strong> <em>XXXXX</em></p>
 <p><strong>Dane:</strong> <a href="https://www.parp.gov.pl/images/publications/BKL/nowy-uklad/Baza_danych_z_badania_ludnoci_BKL_edycja_2021_SAV-SPSS.sav">Baza danych BKL 2021 (.sav)</a></p>
@@ -3308,8 +3301,8 @@ Wymagania dotyczące oddania pracy
 <li><strong>n1</strong> – czy respondent pracuje “na czarno / na szaro” (binarna 0/1)</li>
 </ul>
 </section>
-<section id="dane-referencyjne-oficjalny-bael-4.-kwartał-2021" class="level2" data-number="1.3">
-<h2 data-number="1.3" class="anchored" data-anchor-id="dane-referencyjne-oficjalny-bael-4.-kwartał-2021"><span class="header-section-number">1.3</span> Dane referencyjne: oficjalny BAEL, 4. kwartał 2021</h2>
+<section id="dane-referencyjne-oficjalny-bael-4.-kwartał-2021" class="level2">
+<h2 class="anchored" data-anchor-id="dane-referencyjne-oficjalny-bael-4.-kwartał-2021">Dane referencyjne: oficjalny BAEL, 4. kwartał 2021</h2>
 <p>Źródło: GUS, <em>Aktywność ekonomiczna ludności Polski</em> (BAEL), IV kwartał 2021 (Tablice 5, 7, 9). Wartości w <strong>tysiącach osób</strong> w wieku 15–89 lat.</p>
 <table class="caption-top table">
 <colgroup>
@@ -3446,62 +3439,114 @@ Wymagania dotyczące oddania pracy
 <p>“.” – brak danych (cecha statystycznie niemiarodajna z uwagi na małą liczność próby).</p>
 <p><strong>Łączna populacja w wieku 15–89 lat:</strong> 16780 + 497 + 12529 = <strong>29806 tys.</strong> (tj. ok. 29 806 000 osób).</p>
 </section>
-<section id="krok-0-pakiety" class="level2" data-number="1.4">
-<h2 data-number="1.4" class="anchored" data-anchor-id="krok-0-pakiety"><span class="header-section-number">1.4</span> Krok 0: Pakiety</h2>
+<section id="krok-0-pakiety" class="level2">
+<h2 class="anchored" data-anchor-id="krok-0-pakiety">Krok 0: Pakiety</h2>
 <p>Załadować potrzebne pakiety.</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-1-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-1-1" role="tab" aria-controls="tabset-1-1" aria-selected="true" href>R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-1-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-1-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)        <span class="do">## wczytanie pliku .sav</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nonprobsvy)   <span class="do">## kalibracyjny IPW</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vcd)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(haven)        <span class="do">## wczytanie pliku .sav</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package &#39;haven&#39; was built under R version 4.5.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;dplyr&#39;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:stats&#39;:
+
+    filter, lag</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following objects are masked from &#39;package:base&#39;:
+
+    intersect, setdiff, setequal, union</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survey)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package &#39;survey&#39; was built under R version 4.5.3</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: grid</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: Matrix</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: survival</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: &#39;survey&#39;</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from &#39;package:graphics&#39;:
+
+    dotchart</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nonprobsvy)   <span class="do">## kalibracyjny IPW</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: package &#39;nonprobsvy&#39; was built under R version 4.5.3</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vcd)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="krok-1-wczytanie-i-przygotowanie-danych-kod-gotowy" class="level2" data-number="1.5">
-<h2 data-number="1.5" class="anchored" data-anchor-id="krok-1-wczytanie-i-przygotowanie-danych-kod-gotowy"><span class="header-section-number">1.5</span> Krok 1: Wczytanie i przygotowanie danych (kod gotowy)</h2>
+<section id="krok-1-wczytanie-i-przygotowanie-danych-kod-gotowy" class="level2">
+<h2 class="anchored" data-anchor-id="krok-1-wczytanie-i-przygotowanie-danych-kod-gotowy">Krok 1: Wczytanie i przygotowanie danych (kod gotowy)</h2>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Adnotacja
+Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
 <p>Cały kod w tej sekcji jest <strong>dany</strong> – wystarczy go uruchomić, nie podlega ocenie. Kategorie BKL są tu mapowane na kategorie zgodne z tabelą referencyjną BAEL z poprzedniej sekcji, dzięki czemu w Częściach A–C nie trzeba się zajmować czyszczeniem danych.</p>
 </div>
 </div>
-<section id="a-wczytanie-pliku-.sav" class="level3" data-number="1.5.1">
-<h3 data-number="1.5.1" class="anchored" data-anchor-id="a-wczytanie-pliku-.sav"><span class="header-section-number">1.5.1</span> a) Wczytanie pliku .sav</h3>
+<section id="a-wczytanie-pliku-.sav" class="level3">
+<h3 class="anchored" data-anchor-id="a-wczytanie-pliku-.sav">a) Wczytanie pliku .sav</h3>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-2-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-2-1" role="tab" aria-controls="tabset-2-1" aria-selected="true" href>R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-2-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-2-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://www.parp.gov.pl/images/publications/BKL/nowy-uklad/Baza_danych_z_badania_ludnoci_BKL_edycja_2021_SAV-SPSS.sav&quot;</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">&quot;bkl-2021.sav&quot;</span>)) {</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(url, <span class="st">&quot;bkl-2021.sav&quot;</span>, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>bkl <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">&quot;bkl-2021.sav&quot;</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;m2&quot;</span>, <span class="st">&quot;wiek_10k&quot;</span>, <span class="st">&quot;wykszt_7k&quot;</span>,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;BAEL_sytzaw&quot;</span>, <span class="st">&quot;n1&quot;</span>), <span class="at">user_na =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bkl)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>url <span class="ot">&lt;-</span> <span class="st">&quot;https://www.parp.gov.pl/images/publications/BKL/nowy-uklad/Baza_danych_z_badania_ludnoci_BKL_edycja_2021_SAV-SPSS.sav&quot;</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">file.exists</span>(<span class="st">&quot;bkl-2021.sav&quot;</span>)) {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">download.file</span>(url, <span class="st">&quot;bkl-2021.sav&quot;</span>, <span class="at">mode =</span> <span class="st">&quot;wb&quot;</span>)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>bkl <span class="ot">&lt;-</span> <span class="fu">read_sav</span>(<span class="st">&quot;bkl-2021.sav&quot;</span>,</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>                <span class="at">col_select =</span> <span class="fu">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;m2&quot;</span>, <span class="st">&quot;wiek_10k&quot;</span>, <span class="st">&quot;wykszt_7k&quot;</span>,</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>                               <span class="st">&quot;BAEL_sytzaw&quot;</span>, <span class="st">&quot;n1&quot;</span>), <span class="at">user_na =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bkl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 6
+     id wiek_10k  m2            BAEL_sytzaw         wykszt_7k        n1       
+  &lt;dbl&gt; &lt;dbl+lbl&gt; &lt;dbl+lbl&gt;     &lt;dbl+lbl&gt;           &lt;dbl+lbl&gt;        &lt;dbl+lbl&gt;
+1  6590 8 [55-59] 0 [mężczyzna] 0 [pracujący]       2 [zasadnicze z… 0 [nie]  
+2  6591 1 [18-24] 0 [mężczyzna] 0 [pracujący]       3 [średnie ogól… 0 [nie]  
+3  6592 4 [35-39] 1 [kobieta]   0 [pracujący]       7 [wyższe (mgr)] 0 [nie]  
+4  6593 2 [25-29] 1 [kobieta]   0 [pracujący]       4 [średnie zawo… 1 [tak]  
+5  6594 1 [18-24] 1 [kobieta]   0 [pracujący]       6 [wyższe (lice… 0 [nie]  
+6  6595 2 [25-29] 1 [kobieta]   2 (NA) [nieaktywni] 4 [średnie zawo… 0 [nie]  </code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="b-harmonizacja-zmiennych-bkl-bael" class="level3" data-number="1.5.2">
-<h3 data-number="1.5.2" class="anchored" data-anchor-id="b-harmonizacja-zmiennych-bkl-bael"><span class="header-section-number">1.5.2</span> b) Harmonizacja zmiennych BKL → BAEL</h3>
+<section id="b-harmonizacja-zmiennych-bkl-bael" class="level3">
+<h3 class="anchored" data-anchor-id="b-harmonizacja-zmiennych-bkl-bael">b) Harmonizacja zmiennych BKL → BAEL</h3>
 <p>Harmonizacja kategorii BKL z kategoriami BAEL z tabeli referencyjnej:</p>
 <table class="caption-top table">
 <thead>
@@ -3594,102 +3639,199 @@ Adnotacja
 <div class="tab-content">
 <div id="tabset-3-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-3-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>bkl <span class="ot">&lt;-</span> bkl <span class="sc">|&gt;</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">plec =</span> <span class="fu">factor</span>(m2, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;mężczyźni&quot;</span>, <span class="st">&quot;kobiety&quot;</span>)),</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## w BAEL_sytzaw NA = nieaktywni zawodowo (kategoria 2 nie występuje w danych)</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">0</span>   <span class="sc">~</span> <span class="st">&quot;Pracujący&quot;</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">1</span>   <span class="sc">~</span> <span class="st">&quot;Bezrobotny&quot;</span>,</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">2</span>   <span class="sc">~</span> <span class="st">&quot;Bierny zawodowo&quot;</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> <span class="fu">factor</span>(status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Pracujący&quot;</span>, <span class="st">&quot;Bezrobotny&quot;</span>, <span class="st">&quot;Bierny zawodowo&quot;</span>)),</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## wiek_10k -&gt; grupy wiekowe BAEL</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## (kategoria 9 = 60-64 dzieli się po płci: M produkcyjny, K poprodukcyjna)</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">wiek =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">1</span>            <span class="sc">~</span> <span class="st">&quot;15-24&quot;</span>,     <span class="do">## 18-24 (BKL nie ma 15-17)</span></span>
-<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>        <span class="sc">~</span> <span class="st">&quot;25-34&quot;</span>,</span>
-<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>        <span class="sc">~</span> <span class="st">&quot;35-44&quot;</span>,</span>
-<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>        <span class="sc">~</span> <span class="st">&quot;45-59/64&quot;</span>,  <span class="do">## 45-59</span></span>
-<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">9</span>  <span class="sc">&amp;</span> m2 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">&quot;45-59/64&quot;</span>,  <span class="do">## M 60-64: produkcyjny</span></span>
-<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">9</span>  <span class="sc">&amp;</span> m2 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;60/65-89&quot;</span>,  <span class="do">## K 60-64: poprodukcyjna</span></span>
-<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">10</span>           <span class="sc">~</span> <span class="st">&quot;60/65-89&quot;</span>   <span class="do">## 65-69</span></span>
-<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">wiek =</span> <span class="fu">factor</span>(wiek, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;15-24&quot;</span>, <span class="st">&quot;25-34&quot;</span>, <span class="st">&quot;35-44&quot;</span>,</span>
-<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&quot;45-59/64&quot;</span>, <span class="st">&quot;60/65-89&quot;</span>)),</span>
-<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## wykszt_7k -&gt; 5 kategorii BAEL</span></span>
-<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">wyksztalcenie =</span> <span class="fu">case_when</span>(</span>
-<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">1</span>     <span class="sc">~</span> <span class="st">&quot;gimnazjalne i poniżej&quot;</span>,</span>
-<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">2</span>     <span class="sc">~</span> <span class="st">&quot;zasadnicze zawodowe/branżowe&quot;</span>,</span>
-<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">3</span>     <span class="sc">~</span> <span class="st">&quot;średnie ogólnokształcące&quot;</span>,</span>
-<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">%in%</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">&quot;policealne i średnie zawodowe&quot;</span>,</span>
-<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">%in%</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">&quot;wyższe&quot;</span></span>
-<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">wyksztalcenie =</span> <span class="fu">factor</span>(wyksztalcenie,</span>
-<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;wyższe&quot;</span>,</span>
-<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;policealne i średnie zawodowe&quot;</span>,</span>
-<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;średnie ogólnokształcące&quot;</span>,</span>
-<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;zasadnicze zawodowe/branżowe&quot;</span>,</span>
-<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;gimnazjalne i poniżej&quot;</span>)),</span>
-<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a>    <span class="do">## n1: -3 (brak danych) i -1 (NDT) -&gt; NA, reszta 0/1</span></span>
-<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">n1 =</span> <span class="fu">if_else</span>(n1 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="cn">NA_real_</span>, <span class="fu">as.numeric</span>(n1))</span>
-<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
-<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wiek)) <span class="sc">|&gt;</span></span>
-<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wyksztalcenie)) <span class="sc">|&gt;</span></span>
-<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(n1)) <span class="sc">|&gt;</span></span>
-<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a>    <span class="do">## zostawiamy tylko kolumny zmapowane do BAEL + zmienną wynikową n1</span></span>
-<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(plec, wiek, wyksztalcenie, status, n1)</span>
-<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bkl)</span>
-<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>plec)</span>
-<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>wiek)</span>
-<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>wyksztalcenie)</span>
-<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>status)</span>
-<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>n1)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>bkl <span class="ot">&lt;-</span> bkl <span class="sc">|&gt;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">plec =</span> <span class="fu">factor</span>(m2, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">labels =</span> <span class="fu">c</span>(<span class="st">&quot;mężczyźni&quot;</span>, <span class="st">&quot;kobiety&quot;</span>)),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="do">## w BAEL_sytzaw NA = nieaktywni zawodowo (kategoria 2 nie występuje w danych)</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">0</span>   <span class="sc">~</span> <span class="st">&quot;Pracujący&quot;</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">1</span>   <span class="sc">~</span> <span class="st">&quot;Bezrobotny&quot;</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>      BAEL_sytzaw <span class="sc">==</span> <span class="dv">2</span>   <span class="sc">~</span> <span class="st">&quot;Bierny zawodowo&quot;</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">status =</span> <span class="fu">factor</span>(status, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;Pracujący&quot;</span>, <span class="st">&quot;Bezrobotny&quot;</span>, <span class="st">&quot;Bierny zawodowo&quot;</span>)),</span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    <span class="do">## wiek_10k -&gt; grupy wiekowe BAEL</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    <span class="do">## (kategoria 9 = 60-64 dzieli się po płci: M produkcyjny, K poprodukcyjna)</span></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>    <span class="at">wiek =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">1</span>            <span class="sc">~</span> <span class="st">&quot;15-24&quot;</span>,     <span class="do">## 18-24 (BKL nie ma 15-17)</span></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">3</span>        <span class="sc">~</span> <span class="st">&quot;25-34&quot;</span>,</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span>        <span class="sc">~</span> <span class="st">&quot;35-44&quot;</span>,</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">%in%</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">8</span>        <span class="sc">~</span> <span class="st">&quot;45-59/64&quot;</span>,  <span class="do">## 45-59</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">9</span>  <span class="sc">&amp;</span> m2 <span class="sc">==</span> <span class="dv">0</span> <span class="sc">~</span> <span class="st">&quot;45-59/64&quot;</span>,  <span class="do">## M 60-64: produkcyjny</span></span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">9</span>  <span class="sc">&amp;</span> m2 <span class="sc">==</span> <span class="dv">1</span> <span class="sc">~</span> <span class="st">&quot;60/65-89&quot;</span>,  <span class="do">## K 60-64: poprodukcyjna</span></span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>      wiek_10k <span class="sc">==</span> <span class="dv">10</span>           <span class="sc">~</span> <span class="st">&quot;60/65-89&quot;</span>   <span class="do">## 65-69</span></span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">wiek =</span> <span class="fu">factor</span>(wiek, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;15-24&quot;</span>, <span class="st">&quot;25-34&quot;</span>, <span class="st">&quot;35-44&quot;</span>,</span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>                                   <span class="st">&quot;45-59/64&quot;</span>, <span class="st">&quot;60/65-89&quot;</span>)),</span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a>    <span class="do">## wykszt_7k -&gt; 5 kategorii BAEL</span></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">wyksztalcenie =</span> <span class="fu">case_when</span>(</span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">1</span>     <span class="sc">~</span> <span class="st">&quot;gimnazjalne i poniżej&quot;</span>,</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">2</span>     <span class="sc">~</span> <span class="st">&quot;zasadnicze zawodowe/branżowe&quot;</span>,</span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">==</span> <span class="dv">3</span>     <span class="sc">~</span> <span class="st">&quot;średnie ogólnokształcące&quot;</span>,</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">%in%</span> <span class="dv">4</span><span class="sc">:</span><span class="dv">5</span> <span class="sc">~</span> <span class="st">&quot;policealne i średnie zawodowe&quot;</span>,</span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a>      wykszt_7k <span class="sc">%in%</span> <span class="dv">6</span><span class="sc">:</span><span class="dv">7</span> <span class="sc">~</span> <span class="st">&quot;wyższe&quot;</span></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">wyksztalcenie =</span> <span class="fu">factor</span>(wyksztalcenie,</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>                           <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;wyższe&quot;</span>,</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;policealne i średnie zawodowe&quot;</span>,</span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;średnie ogólnokształcące&quot;</span>,</span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;zasadnicze zawodowe/branżowe&quot;</span>,</span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a>                                      <span class="st">&quot;gimnazjalne i poniżej&quot;</span>)),</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="do">## n1: -3 (brak danych) i -1 (NDT) -&gt; NA, reszta 0/1</span></span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>    <span class="at">n1 =</span> <span class="fu">if_else</span>(n1 <span class="sc">%in%</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="sc">-</span><span class="dv">1</span>), <span class="cn">NA_real_</span>, <span class="fu">as.numeric</span>(n1))</span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">|&gt;</span></span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wiek)) <span class="sc">|&gt;</span></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(wyksztalcenie)) <span class="sc">|&gt;</span></span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(n1)) <span class="sc">|&gt;</span></span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a>    <span class="do">## zostawiamy tylko kolumny zmapowane do BAEL + zmienną wynikową n1</span></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(plec, wiek, wyksztalcenie, status, n1)</span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bkl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6 × 5
+  plec      wiek     wyksztalcenie                 status             n1
+  &lt;fct&gt;     &lt;fct&gt;    &lt;fct&gt;                         &lt;fct&gt;           &lt;dbl&gt;
+1 mężczyźni 45-59/64 zasadnicze zawodowe/branżowe  Pracujący           0
+2 mężczyźni 15-24    średnie ogólnokształcące      Pracujący           0
+3 kobiety   35-44    wyższe                        Pracujący           0
+4 kobiety   25-34    policealne i średnie zawodowe Pracujący           1
+5 kobiety   15-24    wyższe                        Pracujący           0
+6 kobiety   25-34    policealne i średnie zawodowe Bierny zawodowo     0</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>plec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+mężczyźni   kobiety 
+     1112      1411 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>wiek)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   15-24    25-34    35-44 45-59/64 60/65-89 
+     276      442      499      820      486 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>wyksztalcenie)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                       wyższe policealne i średnie zawodowe 
+                          702                           755 
+     średnie ogólnokształcące  zasadnicze zawodowe/branżowe 
+                          236                           575 
+        gimnazjalne i poniżej 
+                          255 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      Pracujący      Bezrobotny Bierny zawodowo 
+           1609              97             817 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(bkl<span class="sc">$</span>n1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+   0    1 
+2416  107 </code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
 </section>
-<section id="część-a-zadanie-1-korelacje-3-punkty" class="level2" data-number="1.6">
-<h2 data-number="1.6" class="anchored" data-anchor-id="część-a-zadanie-1-korelacje-3-punkty"><span class="header-section-number">1.6</span> Część A: Zadanie 1 – Korelacje (3 punkty)</h2>
+<section id="część-a-zadanie-1-korelacje-3-punkty" class="level2">
+<h2 class="anchored" data-anchor-id="część-a-zadanie-1-korelacje-3-punkty">Część A: Zadanie 1 – Korelacje (3 punkty)</h2>
 <p>Sprawdzić siłę powiązania zmiennej <code>n1</code> (praca na czarno/szaro) z każdą z czterech zmiennych grupujących: <strong>płeć</strong>, <strong>grupa wieku</strong>, <strong>wykształcenie</strong>, <strong>status BAEL</strong>.</p>
-<section id="a-tabele-kontyngencji-1-pkt" class="level3" data-number="1.6.1">
-<h3 data-number="1.6.1" class="anchored" data-anchor-id="a-tabele-kontyngencji-1-pkt"><span class="header-section-number">1.6.1</span> a) Tabele kontyngencji (1 pkt)</h3>
+<section id="a-tabele-kontyngencji-1-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="a-tabele-kontyngencji-1-pkt">a) Tabele kontyngencji (1 pkt)</h3>
 <p>Dla każdej pary (<code>n1</code> × zmienna grupująca) zbudować tabelę liczebności oraz tabelę odsetków wierszowych (lub kolumnowych – wybór uzasadnić).</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-4-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-4-1" role="tab" aria-controls="tabset-4-1" aria-selected="true" href>R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-4-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-4-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: table(), prop.table(), addmargins()</span></span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>plec)</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>wiek)</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>tab3 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>wyksztalcenie)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>tab4 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>status)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>tab1</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>tab2</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>tab3</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>tab4</span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab1, <span class="at">margin =</span> <span class="dv">2</span>)</span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab2, <span class="at">margin =</span> <span class="dv">2</span>)</span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab3, <span class="at">margin =</span> <span class="dv">2</span>)</span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab4, <span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: table(), prop.table(), addmargins()</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>tab1 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>plec)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>tab2 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>wiek)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>tab3 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>wyksztalcenie)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>tab4 <span class="ot">&lt;-</span> <span class="fu">table</span>(bkl<span class="sc">$</span>n1, bkl<span class="sc">$</span>status)</span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>tab1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    mężczyźni kobiety
+  0      1046    1370
+  1        66      41</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>tab2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    15-24 25-34 35-44 45-59/64 60/65-89
+  0   235   418   485      796      482
+  1    41    24    14       24        4</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>tab3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    wyższe policealne i średnie zawodowe średnie ogólnokształcące
+  0    684                           723                      219
+  1     18                            32                       17
+   
+    zasadnicze zawodowe/branżowe gimnazjalne i poniżej
+  0                          561                   229
+  1                           14                    26</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>tab4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+    Pracujący Bezrobotny Bierny zawodowo
+  0      1542         84             790
+  1        67         13              27</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab1, <span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+     mężczyźni    kobiety
+  0 0.94064748 0.97094259
+  1 0.05935252 0.02905741</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab2, <span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+          15-24       25-34       35-44    45-59/64    60/65-89
+  0 0.851449275 0.945701357 0.971943888 0.970731707 0.991769547
+  1 0.148550725 0.054298643 0.028056112 0.029268293 0.008230453</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab3, <span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+        wyższe policealne i średnie zawodowe średnie ogólnokształcące
+  0 0.97435897                    0.95761589               0.92796610
+  1 0.02564103                    0.04238411               0.07203390
+   
+    zasadnicze zawodowe/branżowe gimnazjalne i poniżej
+  0                   0.97565217            0.89803922
+  1                   0.02434783            0.10196078</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">prop.table</span>(tab4, <span class="at">margin =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   
+     Pracujący Bezrobotny Bierny zawodowo
+  0 0.95835923 0.86597938      0.96695226
+  1 0.04164077 0.13402062      0.03304774</code></pre>
 </div>
 </div>
 </div>
 </div>
+</div>
+<p>W analizie zastosowano odsetki kolumnowe, ponieważ pokazuje on odsetki w podzialne na pracę na czarno/szaro</p>
 </section>
-<section id="b-test-niezależności-i-miara-siły-związku-2-pkt" class="level3" data-number="1.6.2">
-<h3 data-number="1.6.2" class="anchored" data-anchor-id="b-test-niezależności-i-miara-siły-związku-2-pkt"><span class="header-section-number">1.6.2</span> b) Test niezależności i miara siły związku (2 pkt)</h3>
+<section id="b-test-niezależności-i-miara-siły-związku-2-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="b-test-niezależności-i-miara-siły-związku-2-pkt">b) Test niezależności i miara siły związku (2 pkt)</h3>
 <p>Dla każdej z czterech tabel:</p>
 <ul>
 <li>przeprowadzić <strong>test <span class="math inline">\(\chi^2\)</span></strong> niezależności i podać p-wartość,</li>
@@ -3700,34 +3842,101 @@ Adnotacja
 <div class="tab-content">
 <div id="tabset-5-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-5-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: chisq.test(); pakiet vcd</span></span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab1)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab1)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab2)</span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab2)</span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab3)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab3)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab4)</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab4)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: chisq.test(); pakiet vcd</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson&#39;s Chi-squared test with Yates&#39; continuity correction
+
+data:  tab1
+X-squared = 13.318, df = 1, p-value = 0.0002628</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    X^2 df   P(&gt; X^2)
+Likelihood Ratio 13.959  1 0.00018683
+Pearson          14.054  1 0.00017759
+
+Phi-Coefficient   : 0.075 
+Contingency Coeff.: 0.074 
+Cramer&#39;s V        : 0.075 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson&#39;s Chi-squared test
+
+data:  tab2
+X-squared = 98.102, df = 4, p-value &lt; 2.2e-16</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    X^2 df  P(&gt; X^2)
+Likelihood Ratio 76.445  4 9.992e-16
+Pearson          98.102  4 0.000e+00
+
+Phi-Coefficient   : NA 
+Contingency Coeff.: 0.193 
+Cramer&#39;s V        : 0.197 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson&#39;s Chi-squared test
+
+data:  tab3
+X-squared = 36.847, df = 4, p-value = 1.937e-07</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    X^2 df   P(&gt; X^2)
+Likelihood Ratio 31.517  4 2.4005e-06
+Pearson          36.847  4 1.9368e-07
+
+Phi-Coefficient   : NA 
+Contingency Coeff.: 0.12 
+Cramer&#39;s V        : 0.121 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tab4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in chisq.test(tab4): Chi-squared approximation may be incorrect</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson&#39;s Chi-squared test
+
+data:  tab4
+X-squared = 21.832, df = 2, p-value = 1.816e-05</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">assocstats</span>(tab4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                    X^2 df   P(&gt; X^2)
+Likelihood Ratio 14.949  2 5.6743e-04
+Pearson          21.832  2 1.8163e-05
+
+Phi-Coefficient   : NA 
+Contingency Coeff.: 0.093 
+Cramer&#39;s V        : 0.093 </code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <p><strong>Odpowiedź (interpretacja):</strong></p>
 <ul>
-<li>Płeć vs <code>n1</code>: V Craméra = <em>…</em>, p = <em>…</em></li>
-<li>Grupa wieku vs <code>n1</code>: V Craméra = <em>…</em>, p = <em>…</em></li>
-<li>Wykształcenie vs <code>n1</code>: V Craméra = <em>…</em>, p = <em>…</em></li>
-<li>Status BAEL vs <code>n1</code>: V Craméra = <em>…</em>, p = <em>…</em></li>
+<li>Płeć vs <code>n1</code>: V Craméra = <em>0.075</em>, p = <em>0.00018683</em></li>
+<li>Grupa wieku vs <code>n1</code>: V Craméra = <em>0.197</em>, p = <em>9.992e-16</em></li>
+<li>Wykształcenie vs <code>n1</code>: V Craméra = <em>0.121</em>, p = <em>2.4005e-06</em></li>
+<li>Status BAEL vs <code>n1</code>: V Craméra = <em>0.093</em>, p = <em>5.6743e-04</em></li>
 </ul>
-<p>Która zmienna grupująca jest <strong>najsilniej</strong> powiązana z pracą nierejestrowaną? <em>…</em></p>
+<p>Która zmienna grupująca jest <strong>najsilniej</strong> powiązana z pracą nierejestrowaną? <em>wiek</em> VCramera = 0.197</p>
 </section>
 </section>
-<section id="część-b-zadanie-2-porównanie-odsetków-bael-z-oficjalnymi-danymi-3-punkty" class="level2" data-number="1.7">
-<h2 data-number="1.7" class="anchored" data-anchor-id="część-b-zadanie-2-porównanie-odsetków-bael-z-oficjalnymi-danymi-3-punkty"><span class="header-section-number">1.7</span> Część B: Zadanie 2 – Porównanie odsetków BAEL z oficjalnymi danymi (3 punkty)</h2>
-<section id="a-odsetki-w-bkl-1-pkt" class="level3" data-number="1.7.1">
-<h3 data-number="1.7.1" class="anchored" data-anchor-id="a-odsetki-w-bkl-1-pkt"><span class="header-section-number">1.7.1</span> a) Odsetki w BKL (1 pkt)</h3>
+<section id="część-b-zadanie-2-porównanie-odsetków-bael-z-oficjalnymi-danymi-3-punkty" class="level2">
+<h2 class="anchored" data-anchor-id="część-b-zadanie-2-porównanie-odsetków-bael-z-oficjalnymi-danymi-3-punkty">Część B: Zadanie 2 – Porównanie odsetków BAEL z oficjalnymi danymi (3 punkty)</h2>
+<section id="a-odsetki-w-bkl-1-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="a-odsetki-w-bkl-1-pkt">a) Odsetki w BKL (1 pkt)</h3>
 <p>Obliczyć odsetki kategorii <strong>czterech</strong> zmiennych w próbie BKL:</p>
 <ul>
 <li><strong>status BAEL</strong> – pracujący / bezrobotny / bierny zawodowo,</li>
@@ -3740,23 +3949,47 @@ Adnotacja
 <div class="tab-content">
 <div id="tabset-6-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-6-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: prop.table(table(...)) albo podobne</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>ods_status <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>status))</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ods_plec <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>plec))</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ods_wiek <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>wiek))</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>ods_wyk <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>wyksztalcenie))</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>ods_status</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>ods_wiek</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>ods_wiek</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>ods_wyk</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Wskazówka: prop.table(table(...)) albo podobne</span></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>ods_status <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>status))</span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>ods_plec <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>plec))</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>ods_wiek <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>wiek))</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>ods_wyk <span class="ot">&lt;-</span> <span class="fu">prop.table</span>(<span class="fu">table</span>(bkl<span class="sc">$</span>wyksztalcenie))</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>ods_status</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+      Pracujący      Bezrobotny Bierny zawodowo 
+     0.63773286      0.03844629      0.32382085 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>ods_wiek</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    15-24     25-34     35-44  45-59/64  60/65-89 
+0.1093936 0.1751883 0.1977804 0.3250099 0.1926278 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>ods_wiek</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    15-24     25-34     35-44  45-59/64  60/65-89 
+0.1093936 0.1751883 0.1977804 0.3250099 0.1926278 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>ods_wyk</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+                       wyższe policealne i średnie zawodowe 
+                   0.27824019                    0.29924693 
+     średnie ogólnokształcące  zasadnicze zawodowe/branżowe 
+                   0.09353944                    0.22790329 
+        gimnazjalne i poniżej 
+                   0.10107015 </code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="b-porównanie-z-oficjalnymi-danymi-bael-2-pkt" class="level3" data-number="1.7.2">
-<h3 data-number="1.7.2" class="anchored" data-anchor-id="b-porównanie-z-oficjalnymi-danymi-bael-2-pkt"><span class="header-section-number">1.7.2</span> b) Porównanie z oficjalnymi danymi BAEL (2 pkt)</h3>
+<section id="b-porównanie-z-oficjalnymi-danymi-bael-2-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="b-porównanie-z-oficjalnymi-danymi-bael-2-pkt">b) Porównanie z oficjalnymi danymi BAEL (2 pkt)</h3>
 <p>Oficjalne odsetki BAEL (GUS, IV kw. 2021), obliczone z tabeli referencyjnej:</p>
 <p><strong>Status BAEL</strong> (mianownik: 29806 tys.):</p>
 <table class="caption-top table">
@@ -3868,34 +4101,34 @@ Adnotacja
 <div class="tab-content">
 <div id="tabset-7-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-7-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>bael_status <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Pracujący&quot;</span> <span class="ot">=</span> <span class="fl">56.30</span>,</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Bezrobotny&quot;</span> <span class="ot">=</span> <span class="fl">1.67</span>,</span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;Bierny zawodowo&quot;</span> <span class="ot">=</span> <span class="fl">42.03</span>)</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>bael_plec <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;mężczyźni&quot;</span> <span class="ot">=</span> <span class="fl">47.90</span>,</span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;kobiety&quot;</span> <span class="ot">=</span> <span class="fl">52.10</span>)</span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>bael_wiek <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;15-24&quot;</span> <span class="ot">=</span> <span class="fl">11.35</span>,</span>
-<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;25-34&quot;</span> <span class="ot">=</span> <span class="fl">15.47</span>,</span>
-<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;35-44&quot;</span> <span class="ot">=</span> <span class="fl">19.03</span>,</span>
-<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;45-59/64&quot;</span> <span class="ot">=</span> <span class="fl">26.92</span>,</span>
-<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>               <span class="st">&quot;60/65-89&quot;</span> <span class="ot">=</span> <span class="fl">27.22</span>)</span>
-<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>bael_wykszt <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;wyższe&quot;</span> <span class="ot">=</span> <span class="fl">25.67</span>,</span>
-<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;policealne i średnie zawodowe&quot;</span> <span class="ot">=</span> <span class="fl">25.63</span>,</span>
-<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;średnie ogólnokształcące&quot;</span> <span class="ot">=</span> <span class="fl">10.11</span>,</span>
-<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;zasadnicze zawodowe/branżowe&quot;</span> <span class="ot">=</span> <span class="fl">23.07</span>,</span>
-<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>                 <span class="st">&quot;gimnazjalne i poniżej&quot;</span> <span class="ot">=</span> <span class="fl">15.51</span>)</span>
-<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="fu">data.frame</span>(</span>
-<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    <span class="co">#zmienna = nazwa_zmiennej,</span></span>
-<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    <span class="co">#kategoria = kategorie,</span></span>
-<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">BKL_proc =</span> <span class="fu">as.numeric</span>(bkl_odsetki[kategorie]),</span>
-<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    <span class="at">BAEL_proc =</span> bael_odsetki,</span>
-<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">roznica_BKL_minus_BAEL =</span> <span class="fu">as.numeric</span>(bkl_odsetki[kategorie]) <span class="sc">-</span> bael_odsetki</span>
-<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R)</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="do">##bael_status &lt;- c(&quot;Pracujący&quot; = 56.30,</span></span>
+<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;Bezrobotny&quot; = 1.67,</span></span>
+<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;Bierny zawodowo&quot; = 42.03)</span></span>
+<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a><span class="do">##bael_plec &lt;- c(&quot;mężczyźni&quot; = 47.90,</span></span>
+<span id="cb72-7"><a href="#cb72-7" aria-hidden="true" tabindex="-1"></a><span class="co">#               &quot;kobiety&quot; = 52.10)</span></span>
+<span id="cb72-8"><a href="#cb72-8" aria-hidden="true" tabindex="-1"></a><span class="co">#</span></span>
+<span id="cb72-9"><a href="#cb72-9" aria-hidden="true" tabindex="-1"></a><span class="do">##bael_wiek &lt;- c(&quot;15-24&quot; = 11.35,</span></span>
+<span id="cb72-10"><a href="#cb72-10" aria-hidden="true" tabindex="-1"></a><span class="co">#               &quot;25-34&quot; = 15.47,</span></span>
+<span id="cb72-11"><a href="#cb72-11" aria-hidden="true" tabindex="-1"></a><span class="co">#               &quot;35-44&quot; = 19.03,</span></span>
+<span id="cb72-12"><a href="#cb72-12" aria-hidden="true" tabindex="-1"></a><span class="co">#               &quot;45-59/64&quot; = 26.92,</span></span>
+<span id="cb72-13"><a href="#cb72-13" aria-hidden="true" tabindex="-1"></a><span class="co">#               &quot;60/65-89&quot; = 27.22)</span></span>
+<span id="cb72-14"><a href="#cb72-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-15"><a href="#cb72-15" aria-hidden="true" tabindex="-1"></a><span class="do">##bael_wykszt &lt;- c(&quot;wyższe&quot; = 25.67,</span></span>
+<span id="cb72-16"><a href="#cb72-16" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;policealne i średnie zawodowe&quot; = 25.63,</span></span>
+<span id="cb72-17"><a href="#cb72-17" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;średnie ogólnokształcące&quot; = 10.11,</span></span>
+<span id="cb72-18"><a href="#cb72-18" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;zasadnicze zawodowe/branżowe&quot; = 23.07,</span></span>
+<span id="cb72-19"><a href="#cb72-19" aria-hidden="true" tabindex="-1"></a><span class="co">#                 &quot;gimnazjalne i poniżej&quot; = 15.51)</span></span>
+<span id="cb72-20"><a href="#cb72-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-21"><a href="#cb72-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb72-22"><a href="#cb72-22" aria-hidden="true" tabindex="-1"></a><span class="do">##data.frame(</span></span>
+<span id="cb72-23"><a href="#cb72-23" aria-hidden="true" tabindex="-1"></a><span class="co">#    #zmienna = nazwa_zmiennej,</span></span>
+<span id="cb72-24"><a href="#cb72-24" aria-hidden="true" tabindex="-1"></a><span class="co">#    #kategoria = kategorie,</span></span>
+<span id="cb72-25"><a href="#cb72-25" aria-hidden="true" tabindex="-1"></a><span class="co">#    BKL_proc = as.numeric(bkl_odsetki[kategorie]),</span></span>
+<span id="cb72-26"><a href="#cb72-26" aria-hidden="true" tabindex="-1"></a><span class="co">#    BAEL_proc = bael_odsetki,</span></span>
+<span id="cb72-27"><a href="#cb72-27" aria-hidden="true" tabindex="-1"></a><span class="co">#    roznica_BKL_minus_BAEL = as.numeric(bkl_odsetki[kategorie]) - bael_odsetki</span></span>
+<span id="cb72-28"><a href="#cb72-28" aria-hidden="true" tabindex="-1"></a><span class="co">#  )</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </div>
 </div>
@@ -3903,8 +4136,8 @@ Adnotacja
 <p><strong>Odpowiedź:</strong> <em>2–3 zdania interpretacji: dla których zmiennych BKL jest najbliżej oficjalnego BAEL? W którą stronę BKL “przesadza”, a w którą “niedoszacowuje”? Czy próba BKL jest reprezentatywna pod względem rozważanych zmiennych?</em></p>
 </section>
 </section>
-<section id="część-c-zadanie-3-kalibracyjny-ipw-do-statusu-bael-4-punkty" class="level2" data-number="1.8">
-<h2 data-number="1.8" class="anchored" data-anchor-id="część-c-zadanie-3-kalibracyjny-ipw-do-statusu-bael-4-punkty"><span class="header-section-number">1.8</span> Część C: Zadanie 3 – Kalibracyjny IPW do statusu BAEL (4 punkty)</h2>
+<section id="część-c-zadanie-3-kalibracyjny-ipw-do-statusu-bael-4-punkty" class="level2">
+<h2 class="anchored" data-anchor-id="część-c-zadanie-3-kalibracyjny-ipw-do-statusu-bael-4-punkty">Część C: Zadanie 3 – Kalibracyjny IPW do statusu BAEL (4 punkty)</h2>
 <p>Traktujemy próbę BKL jako <strong>próbę nielosową</strong> <span class="math inline">\(S_A\)</span> i kalibrujemy ją do <strong>znanych wartości globalnych BAEL</strong> (GUS, IV kw. 2021). Ponieważ dysponujemy tylko wartościami globalnymi (a nie danymi jednostkowymi z BAEL), używamy estymatora <strong>GEE</strong> z argumentem <code>pop_totals</code> – por. notatnik <a href="../codes/qmd/04-ipw-2.qmd"><code>04-ipw-2.qmd</code></a>.</p>
 <p>Wartości globalne BAEL (z tabeli referencyjnej, w <strong>tysiącach</strong>):</p>
 <table class="caption-top table">
@@ -3934,8 +4167,8 @@ Adnotacja
 </tbody>
 </table>
 <p>W razie potrzeby do kalibracji można też wykorzystać wartości globalne z innych charakterystyk z tabeli referencyjnej (płeć, grupa wieku, miasto/wieś, wykształcenie).</p>
-<section id="a-kalibracja-wag-2-pkt" class="level3" data-number="1.8.1">
-<h3 data-number="1.8.1" class="anchored" data-anchor-id="a-kalibracja-wag-2-pkt"><span class="header-section-number">1.8.1</span> a) Kalibracja wag (2 pkt)</h3>
+<section id="a-kalibracja-wag-2-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="a-kalibracja-wag-2-pkt">a) Kalibracja wag (2 pkt)</h3>
 <p>Wykorzystać <code>nonprob()</code> z parametrami:</p>
 <ul>
 <li><code>selection = ~ &lt;zmienna_kalibracyjna&gt;</code>,</li>
@@ -3967,32 +4200,48 @@ Skąd biorą się nazwy w wektorze <code>pop_totals</code>?
 </ul>
 </div>
 </div>
-<section id="i-kalibracja-do-statusu-bael" class="level4" data-number="1.8.1.1">
-<h4 data-number="1.8.1.1" class="anchored" data-anchor-id="i-kalibracja-do-statusu-bael"><span class="header-section-number">1.8.1.1</span> (i) Kalibracja do statusu BAEL</h4>
+<section id="i-kalibracja-do-statusu-bael" class="level4">
+<h4 class="anchored" data-anchor-id="i-kalibracja-do-statusu-bael">(i) Kalibracja do statusu BAEL</h4>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-8-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-8-1" role="tab" aria-controls="tabset-8-1" aria-selected="true" href>R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-8-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-8-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="do">## wartości globalne BAEL Q4 2021 (w tys.)</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>pop_totals_status <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>           <span class="ot">=</span> <span class="dv">16780</span> <span class="sc">+</span> <span class="dv">497</span> <span class="sc">+</span> <span class="dv">12529</span>,  <span class="co"># = 29806</span></span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBezrobotny</span><span class="st">`</span>      <span class="ot">=</span> <span class="dv">497</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBierny zawodowo</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">12529</span>)</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>ipw_status <span class="ot">&lt;-</span> <span class="fu">nonprob</span>(<span class="at">selection =</span> <span class="sc">~</span> status,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target =</span> <span class="sc">~</span> n1,</span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pop_totals =</span> pop_totals_status,</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> bkl,</span>
-<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">method_selection =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">control_selection =</span> <span class="fu">control_sel</span>(<span class="at">est_method =</span> <span class="st">&quot;gee&quot;</span>))</span>
-<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>ipw_status</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="do">## wartości globalne BAEL Q4 2021 (w tys.)</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>pop_totals_status <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span>           <span class="ot">=</span> <span class="dv">16780</span> <span class="sc">+</span> <span class="dv">497</span> <span class="sc">+</span> <span class="dv">12529</span>,  <span class="co"># = 29806</span></span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBezrobotny</span><span class="st">`</span>      <span class="ot">=</span> <span class="dv">497</span>,</span>
+<span id="cb73-4"><a href="#cb73-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBierny zawodowo</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">12529</span>)</span>
+<span id="cb73-5"><a href="#cb73-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb73-6"><a href="#cb73-6" aria-hidden="true" tabindex="-1"></a>ipw_status <span class="ot">&lt;-</span> <span class="fu">nonprob</span>(<span class="at">selection =</span> <span class="sc">~</span> status,</span>
+<span id="cb73-7"><a href="#cb73-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target =</span> <span class="sc">~</span> n1,</span>
+<span id="cb73-8"><a href="#cb73-8" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pop_totals =</span> pop_totals_status,</span>
+<span id="cb73-9"><a href="#cb73-9" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> bkl,</span>
+<span id="cb73-10"><a href="#cb73-10" aria-hidden="true" tabindex="-1"></a>                      <span class="at">method_selection =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb73-11"><a href="#cb73-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">control_selection =</span> <span class="fu">control_sel</span>(<span class="at">est_method =</span> <span class="st">&quot;gee&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in theta_h_estimation(R = R, X = X, weights_rand = weights_rand, : Relatively convergent algorithm when fitting selection model by nleqslv,
+                         but user must check if function values are acceptably small.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>ipw_status</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>A nonprob object
+ - estimator type: inverse probability weighting
+ - method: logit (gee)
+ - auxiliary variables source: population
+ - vars selection: false
+ - variance estimator: analytic
+ - population size fixed: true
+ - naive (uncorrected) estimator: 0.0424
+ - selected estimator: 0.0396 (se=0.0039, ci=(0.0318, 0.0473))
+ - caution: since `pop_size&#39; is provided, the variance is estimated assuming that `pop_size&#39; is known (not estimated). If this assumption is wrong, specify the appropriate `var_method&#39; in the `control_inf()` function.</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="ii-kalibracja-do-grupy-wiekowej-statusu-bael-płci" class="level4" data-number="1.8.1.2">
-<h4 data-number="1.8.1.2" class="anchored" data-anchor-id="ii-kalibracja-do-grupy-wiekowej-statusu-bael-płci"><span class="header-section-number">1.8.1.2</span> (ii) Kalibracja do grupy wiekowej + statusu BAEL + płci</h4>
+<section id="ii-kalibracja-do-grupy-wiekowej-statusu-bael-płci" class="level4">
+<h4 class="anchored" data-anchor-id="ii-kalibracja-do-grupy-wiekowej-statusu-bael-płci">(ii) Kalibracja do grupy wiekowej + statusu BAEL + płci</h4>
 <p><strong>Zadanie</strong>: powtórzyć analogiczną kalibrację z <strong>trzema zmiennymi pomocniczymi</strong> – <code>selection = ~ wiek + status + plec</code>. Wynik zapisać do obiektu <code>ipw_wiek</code>.</p>
 <p>Wektor <code>pop_totals</code> powinien zawierać:</p>
 <ul>
@@ -4040,53 +4289,99 @@ Skąd biorą się nazwy w wektorze <code>pop_totals</code>?
 <div class="tab-content">
 <div id="tabset-9-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-9-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R) -- zbudować pop_totals_wiek (z dummies dla wiek + status + plec),</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="do">##                  uruchomić nonprob() z selection = ~ wiek + status + plec,</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="do">##                  wynik zapisać do `ipw_wiek`.</span></span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(<span class="fu">model.matrix</span>(<span class="sc">~</span> wiek <span class="sc">+</span> status <span class="sc">+</span> plec, <span class="at">data =</span> bkl))</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>pop_totals_wiek <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">29806</span>,</span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek25-34</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">4612</span>,</span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek35-44</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">5672</span>,</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek45-59/64</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">8025</span>,</span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek60/65-89</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">8115</span>,</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBezrobotny</span><span class="st">`</span>      <span class="ot">=</span> <span class="dv">497</span>,</span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBierny zawodowo</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">12529</span>,</span>
-<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">pleckobiety</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">15530</span>)</span>
-<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>ipw_wiek <span class="ot">&lt;-</span> <span class="fu">nonprob</span>(<span class="at">selection =</span> <span class="sc">~</span> wiek <span class="sc">+</span> status <span class="sc">+</span> plec,</span>
-<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target =</span> <span class="sc">~</span> n1,</span>
-<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pop_totals =</span> pop_totals_wiek,</span>
-<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> bkl,</span>
-<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                      <span class="at">method_selection =</span> <span class="st">&quot;logit&quot;</span>,</span>
-<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                      <span class="at">control_selection =</span> <span class="fu">control_sel</span>(<span class="at">est_method =</span> <span class="st">&quot;gee&quot;</span>))</span>
-<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>ipw_wiek</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="do">## Tutaj kod (R) -- zbudować pop_totals_wiek (z dummies dla wiek + status + plec),</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a><span class="do">##                  uruchomić nonprob() z selection = ~ wiek + status + plec,</span></span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a><span class="do">##                  wynik zapisać do `ipw_wiek`.</span></span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(<span class="fu">model.matrix</span>(<span class="sc">~</span> wiek <span class="sc">+</span> status <span class="sc">+</span> plec, <span class="at">data =</span> bkl))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] &quot;(Intercept)&quot;           &quot;wiek25-34&quot;             &quot;wiek35-44&quot;            
+[4] &quot;wiek45-59/64&quot;          &quot;wiek60/65-89&quot;          &quot;statusBezrobotny&quot;     
+[7] &quot;statusBierny zawodowo&quot; &quot;pleckobiety&quot;          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>pop_totals_wiek <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">`</span><span class="at">(Intercept)</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">29806</span>,</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek25-34</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">4612</span>,</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek35-44</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">5672</span>,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek45-59/64</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">8025</span>,</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">wiek60/65-89</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">8115</span>,</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBezrobotny</span><span class="st">`</span>      <span class="ot">=</span> <span class="dv">497</span>,</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">statusBierny zawodowo</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">12529</span>,</span>
+<span id="cb79-8"><a href="#cb79-8" aria-hidden="true" tabindex="-1"></a>                       <span class="st">`</span><span class="at">pleckobiety</span><span class="st">`</span> <span class="ot">=</span> <span class="dv">15530</span>)</span>
+<span id="cb79-9"><a href="#cb79-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-10"><a href="#cb79-10" aria-hidden="true" tabindex="-1"></a>ipw_wiek <span class="ot">&lt;-</span> <span class="fu">nonprob</span>(<span class="at">selection =</span> <span class="sc">~</span> wiek <span class="sc">+</span> status <span class="sc">+</span> plec,</span>
+<span id="cb79-11"><a href="#cb79-11" aria-hidden="true" tabindex="-1"></a>                      <span class="at">target =</span> <span class="sc">~</span> n1,</span>
+<span id="cb79-12"><a href="#cb79-12" aria-hidden="true" tabindex="-1"></a>                      <span class="at">pop_totals =</span> pop_totals_wiek,</span>
+<span id="cb79-13"><a href="#cb79-13" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data =</span> bkl,</span>
+<span id="cb79-14"><a href="#cb79-14" aria-hidden="true" tabindex="-1"></a>                      <span class="at">method_selection =</span> <span class="st">&quot;logit&quot;</span>,</span>
+<span id="cb79-15"><a href="#cb79-15" aria-hidden="true" tabindex="-1"></a>                      <span class="at">control_selection =</span> <span class="fu">control_sel</span>(<span class="at">est_method =</span> <span class="st">&quot;gee&quot;</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning in theta_h_estimation(R = R, X = X, weights_rand = weights_rand, : Relatively convergent algorithm when fitting selection model by nleqslv,
+                         but user must check if function values are acceptably small.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>ipw_wiek</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>A nonprob object
+ - estimator type: inverse probability weighting
+ - method: logit (gee)
+ - auxiliary variables source: population
+ - vars selection: false
+ - variance estimator: analytic
+ - population size fixed: true
+ - naive (uncorrected) estimator: 0.0424
+ - selected estimator: 0.0407 (se=0.0043, ci=(0.0322, 0.0492))
+ - caution: since `pop_size&#39; is provided, the variance is estimated assuming that `pop_size&#39; is known (not estimated). If this assumption is wrong, specify the appropriate `var_method&#39; in the `control_inf()` function.</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
 </section>
-<section id="b-walidacja-kalibracji-i-porównanie-oszacowań-1-pkt" class="level3" data-number="1.8.2">
-<h3 data-number="1.8.2" class="anchored" data-anchor-id="b-walidacja-kalibracji-i-porównanie-oszacowań-1-pkt"><span class="header-section-number">1.8.2</span> b) Walidacja kalibracji i porównanie oszacowań (1 pkt)</h3>
-<section id="i-walidacja-check_balance" class="level4" data-number="1.8.2.1">
-<h4 data-number="1.8.2.1" class="anchored" data-anchor-id="i-walidacja-check_balance"><span class="header-section-number">1.8.2.1</span> (i) Walidacja: <code>check_balance()</code></h4>
+<section id="b-walidacja-kalibracji-i-porównanie-oszacowań-1-pkt" class="level3">
+<h3 class="anchored" data-anchor-id="b-walidacja-kalibracji-i-porównanie-oszacowań-1-pkt">b) Walidacja kalibracji i porównanie oszacowań (1 pkt)</h3>
+<section id="i-walidacja-check_balance" class="level4">
+<h4 class="anchored" data-anchor-id="i-walidacja-check_balance">(i) Walidacja: <code>check_balance()</code></h4>
 <p>Sprawdzić, czy nowe wagi odtwarzają wartości globalne podane w <code>pop_totals</code> – różnica powinna wynosić zero (lub być zaniedbywalnie mała).</p>
 <div class="tabset-margin-container"></div><div class="panel-tabset">
 <ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-10-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-10-1" role="tab" aria-controls="tabset-10-1" aria-selected="true" href>R</a></li></ul>
 <div class="tab-content">
 <div id="tabset-10-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-10-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="do">## walidacja kalibracji do statusu (sekcja a.i)</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">check_balance</span>(<span class="sc">~</span>status<span class="dv">-1</span>,ipw_status)</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">check_balance</span>(<span class="sc">~</span>wiek<span class="dv">-1</span>,ipw_wiek)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="do">## walidacja kalibracji do statusu (sekcja a.i)</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">check_balance</span>(<span class="sc">~</span>status<span class="dv">-1</span>,ipw_status)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$nonprob_totals
+      statusPracujący      statusBezrobotny statusBierny zawodowo 
+                16780                   497                 12529 
+
+$prob_totals
+                 &lt;NA&gt;      statusBezrobotny statusBierny zawodowo 
+                   NA                   497                 12529 
+
+$balance
+      statusPracujący      statusBezrobotny statusBierny zawodowo 
+                   NA                     0                     0 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_balance</span>(<span class="sc">~</span>wiek<span class="dv">-1</span>,ipw_wiek)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$nonprob_totals
+   wiek15-24    wiek25-34    wiek35-44 wiek45-59/64 wiek60/65-89 
+        3382         4612         5672         8025         8115 
+
+$prob_totals
+        &lt;NA&gt;    wiek25-34    wiek35-44 wiek45-59/64 wiek60/65-89 
+          NA         4612         5672         8025         8115 
+
+$balance
+   wiek15-24    wiek25-34    wiek35-44 wiek45-59/64 wiek60/65-89 
+          NA            0            0            0            0 </code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 </section>
-<section id="ii-porównanie-oszacowań" class="level4" data-number="1.8.2.2">
-<h4 data-number="1.8.2.2" class="anchored" data-anchor-id="ii-porównanie-oszacowań"><span class="header-section-number">1.8.2.2</span> (ii) Porównanie oszacowań</h4>
+<section id="ii-porównanie-oszacowań" class="level4">
+<h4 class="anchored" data-anchor-id="ii-porównanie-oszacowań">(ii) Porównanie oszacowań</h4>
 <p>Zestawić oszacowanie odsetka pracujących na czarno/szaro (<code>n1 = 1</code>) w trzech wariantach:</p>
 <table class="caption-top table">
 <thead>
@@ -4098,15 +4393,15 @@ Skąd biorą się nazwy w wektorze <code>pop_totals</code>?
 <tbody>
 <tr class="odd">
 <td>BKL bez wag</td>
-<td style="text-align: right;"><em>…</em></td>
+<td style="text-align: right;"><em>0.04240983</em></td>
 </tr>
 <tr class="even">
 <td>Kalibracja IPW do statusu BAEL</td>
-<td style="text-align: right;"><em>…</em></td>
+<td style="text-align: right;"><em>0.03956906</em></td>
 </tr>
 <tr class="odd">
 <td>Kalibracja IPW do wieku + statusu + płci</td>
-<td style="text-align: right;"><em>…</em></td>
+<td style="text-align: right;"><em>0.04070381</em></td>
 </tr>
 </tbody>
 </table>
@@ -4115,19 +4410,27 @@ Skąd biorą się nazwy w wektorze <code>pop_totals</code>?
 <div class="tab-content">
 <div id="tabset-11-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-11-1-tab">
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="do">## bez wag (naiwne)</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bkl<span class="sc">$</span>n1)</span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="do">## skalibrowane oszacowania -- mean + SE + CI bezpośrednio z extract()</span></span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;do BAEL&quot;</span>               <span class="ot">=</span> <span class="fu">extract</span>(ipw_status),</span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;do wiek + BAEL + płeć&quot;</span> <span class="ot">=</span> <span class="fu">extract</span>(ipw_wiek)</span>
-<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Kopiuj do schowka" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="do">## bez wag (naiwne)</span></span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(bkl<span class="sc">$</span>n1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.04240983</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="do">## skalibrowane oszacowania -- mean + SE + CI bezpośrednio z extract()</span></span>
+<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(</span>
+<span id="cb89-3"><a href="#cb89-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;do BAEL&quot;</span>               <span class="ot">=</span> <span class="fu">extract</span>(ipw_status),</span>
+<span id="cb89-4"><a href="#cb89-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;do wiek + BAEL + płeć&quot;</span> <span class="ot">=</span> <span class="fu">extract</span>(ipw_wiek)</span>
+<span id="cb89-5"><a href="#cb89-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                      target       mean          SE lower_bound upper_bound
+do BAEL                   n1 0.03956906 0.003949746   0.0318277  0.04731042
+do wiek + BAEL + płeć     n1 0.04070381 0.004348706   0.0321805  0.04922712</code></pre>
+</div>
 </div>
 </div>
 </div>
 </div>
 <p><strong>Odpowiedź (wnioski):</strong> <em>2–3 zdania: jak kalibracja (po statusie / po wieku + statusie + płci) zmienia oszacowanie odsetka <code>n1</code>? Która kalibracja daje większy efekt? Czy kierunek zmian jest zgodny z różnicami z Części B?</em></p>
+<p>Kalibracja i po statusie i po wieku daje podobne wyniki, jednakże status jest lepszy.</p>
 </section>
 </section>
 </section>
@@ -4178,12 +4481,12 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // flash "checked"
     button.classList.add('code-copy-button-checked');
     var currentTitle = button.getAttribute("title");
-    button.setAttribute("title", "Skopiowano!");
+    button.setAttribute("title", "Copied!");
     let tooltip;
     if (window.bootstrap) {
       button.setAttribute("data-bs-toggle", "tooltip");
       button.setAttribute("data-bs-placement", "left");
-      button.setAttribute("data-bs-title", "Skopiowano!");
+      button.setAttribute("data-bs-title", "Copied!");
       tooltip = new bootstrap.Tooltip(button, 
         { trigger: "manual", 
           customClass: "code-copy-button-tooltip",
