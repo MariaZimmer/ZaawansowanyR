@@ -4,9 +4,9 @@ format: html
 ---
 
 ```{r}
-install.packages("haven")
-install.packages("tidyverse")
-install.packages("nonprobsvy")
+#install.packages("haven")
+#install.packages("tidyverse")
+#install.packages("nonprobsvy")
 ```
 
 
@@ -14,34 +14,124 @@ install.packages("nonprobsvy")
 library(readxl)
 library(haven)
 library(nonprobsvy)
-<<<<<<< HEAD
-library()
-=======
 library(dplyr)
->>>>>>> fd73c47a33b54562eaab0c3fcc8ff8181f0f12a7
-#library(data.table)
-#library(sjplot)
 ```
 
 ```{r}
 dane_bkl <- read_sav("../dane-surowe/proj_bi/Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
 #zmienna y1 odsetek osób pracujących za granicą 
-#dane_bkl <- dane_bkl %>% mutate(y1 = as.integer(y1)) %>% mutate(m2 = as.integer(m2))
-# m2 to płec 1-kobieta 0-mężczyzna
-#cor(dane_bkl$y1, dane_bkl$m2, use = "complete.obs")
+```
+
+
+```{r}
+attr(dane_bkl$y1, "labels")
+table(dane_bkl$y1, useNA = "ifany")
+table(as_factor(dane_bkl$y1), useNA = "ifany")
 ```
 
 ```{r}
-cor(dane_bkl$y1, dane_bkl$m2, method = "pearson")
+dane_bkl$Y <- ifelse(dane_bkl$y1 == 1, 1,
+                         ifelse(dane_bkl$y1 == 0, 0, NA))
 
+table(dane_bkl$Y, useNA = "ifany")
+prop.table(table(dane_bkl$Y)) * 100
+#Tylko ok 3,58% respondentów ma pracowało zarobkowo zagranicą w ciągu ostatnich 12 miesięcy
 ```
 
+```{r}
+table(dane_bkl$rok, dane_bkl$y1, useNA = "ifany")
+prop.table(table(dane_bkl$rok, dane_bkl$y1), margin = 1) * 100
+# Wartość zmiennej w poszczególnych latach
+```
 
+```{r}
+# Poprawiona zmienna woj_operat
+woj_levels <- c(
+  "dolnośląskie", "kujawsko-pomorskie", "lubelskie", "lubuskie",
+  "łódzkie", "małopolskie", "mazowieckie", "opolskie",
+  "podkarpackie", "podlaskie", "pomorskie", "śląskie",
+  "świętokrzyskie", "warmińsko-mazurskie", "wielkopolskie",
+  "zachodniopomorskie"
+)
 
+dane_bkl$woj_raw <- as.numeric(dane_bkl$woj_operat)
 
+dane_bkl$woj_idx <- ifelse(
+  dane_bkl$rok == 2017,
+  dane_bkl$woj_raw,
+  dane_bkl$woj_raw / 2
+)
 
+dane_bkl$woj_clean <- factor(
+  woj_levels[dane_bkl$woj_idx],
+  levels = woj_levels
+)
 
+table(dane_bkl$rok, dane_bkl$woj_clean, useNA = "ifany")
+```
 
+Wybrane zmienne 
+woj_opetat --> woj_clean
+miejsce
+wiek_4K
+g2_3 (Podniósł umiejętności w ciągu ost. 5 lat)
+k24 (gotowość do częstych wyjazdów)
+w9_1 (jezyk obcy 1)
+```{r}
+vars <- c("wiek_4k", "miejsce", "woj_clean", "g2_3", "k24", "w9_1")
+```
 
+```{r}
+wyniki <- data.frame()
 
+for (v in vars) {
+  
+  x <- dane_bkl[[v]]
+  
+  if (inherits(x, "haven_labelled")) {
+    x <- as_factor(zap_missing(x))
+  } else {
+    x <- factor(x)
+  }
+  
+  tmp <- data.frame(
+    x = x,
+    Y = dane_bkl$Y
+  )
+  
+  tmp <- na.omit(tmp)
+  tmp$x <- droplevels(tmp$x)
+  tmp$Y <- droplevels(factor(tmp$Y))
+  
+  tab <- table(tmp$x, tmp$Y)
+  
+  test <- suppressWarnings(chisq.test(tab, correct = FALSE))
+  
+  chi2 <- as.numeric(test$statistic)
+  n <- sum(tab)
+  V <- sqrt(chi2 / (n * (min(dim(tab)) - 1)))
+  
+  wyniki <- rbind(wyniki, data.frame(
+    zmienna = v,
+    V_Cramera = round(V, 3),
+    p_value = signif(test$p.value, 4),
+    kategorie = nrow(tab),
+    n = n
+  ))
+}
+
+wyniki
+```
+Najbezpieczniejszy zestaw podstawowy:
+
+X=wiek_4k+miejsce+woj_clean
+
+Ale lepszy, pełniejszy zestaw będzie taki:
+
+X=wiek_4k+miejsce+woj_clean+g2_3+k24+w9_1
+
+Tylko w opisie rozdziel je na dwie grupy:
+
+zmienne społeczno-demograficzne: wiek_4k, miejsce, woj_clean;
+zmienne dodatkowe związane z mobilnością i kompetencjami: g2_3, k24, w9_1.
 

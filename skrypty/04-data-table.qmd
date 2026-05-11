@@ -3,6 +3,8 @@ title: "04-data-table"
 format: html
 ---
 
+<<<<<<< HEAD
+=======
 ```{r}
 install.packages("arrow")
 ```
@@ -236,3 +238,4 @@ Napisz funkcję top_n_tras(dt, n, borough), która:
 - Filtruje kursy startujące z podanej dzielnicy,
 - Liczy kursy dla każdej pary pu_zone → do_zone,
 - Zwraca n najczęstszych tras z kolumnami: pu_zone, do_zone, n_kursow, srednia_kwota.
+>>>>>>> c5a23a47bb1f754eda058801f684bb54d991d301
