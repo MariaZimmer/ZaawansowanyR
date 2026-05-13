@@ -1,0 +1,155 @@
+```{r}
+library(stringr)
+library(readxl)
+library(dplyr)
+```
+
+Wytnij nazwę ulicy
+
+```{r}
+x <- c("ul. Winogrady", "ul. Wyzwolenia", "ul. Szymanowskiego", "ul. Małe Garbary")
+str_sub(x, start=5, end = -1)
+```
+
+Sklej teksty, tak aby w wyniku otrzymać: "ul. Winogrady 10" ...
+
+```{r}
+x <- c("Winogrady", "Wyzwolenia", "Szymanowskiego", "Małe Garbary")
+y <- c(10, NA, 30, 40)
+paste("ul.", x, y)
+```
+
+Wyodrębnij domenę poczty z adresu e-mail.
+
+```{r}
+x <- c("abcd@gmail.com", "efg.hij@yahoo.com", "klmno@o2.pl", "pqrstuvwxyz@gmail.com")
+str_split_i(x, pattern = "@", i = 2)
+```
+
+Usuń nadmiarowe spacje.
+
+```{r}
+x <- c(" Winogrady", "Wyzwolenia ", " Szymanowskiego ", "Małe Garbary")
+str_trim(x, side="both") #z obu stron aby usuwało spacje
+```
+
+```{r}
+x <- c(" Winogrady", "Wyzwolenia ", " Szymanowskiego ", "Małe  Garbary")
+```
+
+Posortuj teksty
+
+```{r}
+x <- c("9", "54", "876", "3210")
+```
+
+Uzupełnij zerami z przodu, tak aby wszystkie teksty miały długość 4.
+
+```{r}
+x <- c("9", "54", "876", "3210")
+str_pad(x, width=4, side="left", pad="0")
+```
+
+Zamień wielkie litery na małe.
+
+```{r}
+x <- c(" WINOGRADY", "Wyzwolenia ", " Szymanowskiego ", "Małe  Garbary")
+str_to_lower(x) %>% str_squish() #zamienia wielokrotne na pojedyńcze i usuwa nadwymiarowe z obu stron
+```
+
+Zamień "," na ".".
+
+```{r}
+x <- c("30,1", "40,4", "49,8", "60,3")
+x %>% str_replace(pattern = ",", ".") %>% as.numeric() %>% sum()
+```
+
+```{r}
+x <- c("800,000 PLN", "1,000,000 PLN", "1,200,000 PLN", "1,500,000 PLN")
+```
+
+Zamień "." na ",".
+
+```{r}
+x <- c("30.1", "40.4", "49.8", "60.3")
+str_replace(x, ".", ",")
+str_replace_all(x, ".", ",") #zamienia każdy znak
+str_replace(x, "\\.", ",") #jeżeli faktycznie chcemy kropkę bo jest znakiem specjalnym
+```
+
+Wskaż, który tekst zawiera tekst "garaż".
+
+```{r}
+x <- c("Przytulna kawalerka 30mkw garaż Winogrady", "Kawalerka 40m2 Rataje BEZPOSREDNIO", "Mieszkanie dwupokojowe 50 mkw z garażem PIĄTKOWO", "Mieszkanie dwu-pokojowe 60 m2 Stare Miasto")
+str_detect(x, "garaż")
+```
+
+Wskaż, które teksty zawierają tekst "garaż" lub "parking".
+
+```{r}
+x <- c("Przytulna kawalerka 30mkw GARAŻ Winogrady", "Kawalerka 40m2 Rataje BEZPOSREDNIO", "Mieszkanie dwupokojowe 50 mkw z miejscem parkingowym PIĄTKOWO", "Mieszkanie dwu-pokojowe 60 m2 Stare Miasto")
+str_subset(x, pattern = "garaż | parking") %>%  # pionowa kreska to alternatywa
+x %>% str_to_lower() %>% str_subset("garaż | parking")
+str_subset(x, pattern = regex("garaż | parking", ignore_case = TRUE))
+```
+
+Wyodrębnij powierzchnie mieszkania (dwucyfrowe ciągi znaków).
+
+```{r}
+x <- c("Przytulna kawalerka 30 mkw GARAŻ Winogrady", "Kawalerka Rataje BEZPOSREDNIO", "Mieszkanie dwupokojowe 50 mkw z miejscem parkingowym PIĄTKOWO", "Mieszkanie dwu-pokojowe 60 mkw Stare Miasto")
+```
+
+Wczytaj dane z pliku "rent-poznan.xlsx".
+
+```{r}
+sciezki <- list.files("../dane_surowe/rent-poznan/", full.names = TRUE)
+rent <- lapply(sciezki, read_xlsx)
+rent <- bind_rows(rent) #skleja ramki danych jedna po drugiejrent
+rent <- select(rent, ad_title, flat_area, flat_garage)
+head(rent)
+```
+
+Znajdź ogłoszenia w których występuje słowo: "garaż", "parking" lub "postojowe".
+
+```{r}
+rent %>% filter(str_detect(ad_title, pattern = "garaż | parking | postojowe"))
+rent %>% filter(str_detect(ad_title, pattern = regex("garaż | parking | postojowe", ignore_case = TRUE)))
+```
+
+Znajdź ogłoszenia w których znajduje się tekst z wektora x.
+
+```{r}
+x <- c("garaż", "garaz", "gararz", "parking", "postoj")
+rent %>% filter(str_detect(ad_title, pattern=regex(str_c(x, collapse = "|"))))
+```
+
+Wyodrębnij powierzchnie mieszkania jako tekst składający się od dwóch do trzech cyfr a następnie opcjonalnie spacja oraz skrót "m2" lub "mkw", np. "30m2", "40 m2", "50mkw", "50 mkw".
+
+```{r}
+str_extract(rent$ad_title, "\\d{2,3}")
+str_extract(rent$ad_title, "\\d{2,3}(m2|mkw)")
+```
+
+Uwzględnij we poprzednim zadaniu miejsca dziesiętne w liczbie.
+
+```{r}
+
+```
+
+W poprzednim zadaniu pozostaw tylko liczbę.
+
+```{r}
+
+```
+
+Znajdź ogłoszenia, w któych co najmniej dwukrotnie występuje liczba dwu/trzy-cyfrowa.
+
+```{r}
+
+```
+
+Znajdź ogłoszenia, w któych co najmniej dwukrotnie występuje ten sam ciąg kolejnych 8 znaków (liter lub cyfr).
+
+```{r}
+
+```
