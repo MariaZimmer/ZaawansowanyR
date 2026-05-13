@@ -3,7 +3,48 @@ title: "05-Przetwarzanie_zagniezdzonych_list"
 format: html
 ---
 
+Wczytaj potrzebne pakiety
+
 ```{r}
 library(jsonlite)
+library(purrr)
+library(tibble)
+library(dplyr)
+library(tidyr)
+library(tidyverse)
 ```
+
+Wczytaj dane z pliku season_stats.json
+
+```{r}
+season_list <- read_json("../dane-surowe/season_stats.json")
+```
+
+```{r}
+class(season_list)
+```
+
+Wyświetl nazwę pierwszej drużyny z pierwszego meczu
+
+```{r}
+x <- season_list[[1]][[1]][[1]][[2]]
+x
+```
+
+Zbuduj ramke danych ze statystykjami meczowymi poszczególnych drużyn z całego sezonu
+
+```{r}
+season_df <- season_list %>%
+  tibble() %>% #i teraz to jest lista a nie zwykla ramka danych dzieki temu tibble
+  unnest_longer(season_list) %>%
+  unnest_wider(season_list) %>%
+  select(-Player_stats) %>% 
+  unnest_wider(aggregate_stats) %>% 
+  hoist(team_details, team_name = list("team_name")) %>% 
+  hoist(team_details, date = list("date")) %>% 
+  select(-season_list_id, -team_details) %>% 
+  mutate(across(-(1:2), as.numeric)) %>% 
+  mutate(across(-(1:2), function(x) ifelse(is.na(x), 0, x)))#tu za braki danych sa 0 wstawiane za pomaca na szybko napisanej funkcji
+```
+
 
