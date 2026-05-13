@@ -1,0 +1,9 @@
+---
+title: "05-Przetwarzanie_zagniezdzonych_list"
+format: html
+---
+
+```{r}
+library(jsonlite)
+```
+
