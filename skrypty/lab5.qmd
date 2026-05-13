@@ -1,0 +1,28 @@
+---
+title: "lab5"
+format: html
+---
+
+```{r}
+library(jsonlite)
+library(purrr)
+library(dplyr)
+library(tibble)
+library(tidyr)
+```
+
+```{r}
+season_list <- read_json("../dane_surowe/season_stats.json")
+```
+
+```{r}
+#wyświetl nazwę pierwszej drużyny z pierwszego meczu
+season_list[[1]] #pod każdą listą kryje się lista dwuelementowa i tu wyciągamy po pierwszym elemenie z każdej listy
+season_list[[1]][[1]][[1]]$team_name
+```
+
+```{r}
+#zbuduj df ze statystykami meczowymi poszczególnych drużyn
+season_df <- season_list %>% tibble() %>% unnest_longer("season_list")
+```
+
