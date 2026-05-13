@@ -24,14 +24,13 @@ dane_bkl <- read_sav("Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_202
 
 
 ```{r}
-attr(dane_bkl$y1, "labels")
-table(dane_bkl$y1, useNA = "ifany")
-table(as_factor(dane_bkl$y1), useNA = "ifany")
+attr(dane_bkl$e1, "labels")
+table(as_factor(dane_bkl$e1), useNA = "ifany")
 ```
 
 ```{r}
-dane_bkl$Y <- ifelse(dane_bkl$y1 == 1, 1,
-                         ifelse(dane_bkl$y1 == 0, 0, NA))
+dane_bkl$Y <- ifelse(dane_bkl$e1 == 1, 1,
+                         ifelse(dane_bkl$e1 == 0, 0, NA))
 
 table(dane_bkl$Y, useNA = "ifany")
 prop.table(table(dane_bkl$Y)) * 100
@@ -39,21 +38,13 @@ prop.table(table(dane_bkl$Y)) * 100
 ```
 
 ```{r}
-table(dane_bkl$rok, dane_bkl$y1, useNA = "ifany")
-prop.table(table(dane_bkl$rok, dane_bkl$y1), margin = 1) * 100
+table(dane_bkl$rok, dane_bkl$e1, useNA = "ifany")
+prop.table(table(dane_bkl$rok, dane_bkl$e1), margin = 1) * 100
 # Wartość zmiennej w poszczególnych latach
 ```
 
 ```{r}
 # Poprawiona zmienna woj_operat
-woj_levels <- c(
-  "dolnośląskie", "kujawsko-pomorskie", "lubelskie", "lubuskie",
-  "łódzkie", "małopolskie", "mazowieckie", "opolskie",
-  "podkarpackie", "podlaskie", "pomorskie", "śląskie",
-  "świętokrzyskie", "warmińsko-mazurskie", "wielkopolskie",
-  "zachodniopomorskie"
-)
-
 dane_bkl$woj_raw <- as.numeric(dane_bkl$woj_operat)
 
 dane_bkl$woj_idx <- ifelse(
@@ -63,8 +54,8 @@ dane_bkl$woj_idx <- ifelse(
 )
 
 dane_bkl$woj_clean <- factor(
-  woj_levels[dane_bkl$woj_idx],
-  levels = woj_levels
+  dane_bkl$woj_idx,
+  levels = 1:16
 )
 
 table(dane_bkl$rok, dane_bkl$woj_clean, useNA = "ifany")
@@ -123,15 +114,8 @@ for (v in vars) {
 
 wyniki
 ```
-Najbezpieczniejszy zestaw podstawowy:
 
-X=wiek_4k+miejsce+woj_clean
+Y=wiek_4k+miejsce+woj_clean+g2_3+k24+w9_1
 
-Ale lepszy, pełniejszy zestaw będzie taki:
 
-X=wiek_4k+miejsce+woj_clean+g2_3+k24+w9_1
 
-Tylko w opisie rozdziel je na dwie grupy:
-
-zmienne społeczno-demograficzne: wiek_4k, miejsce, woj_clean;
-zmienne dodatkowe związane z mobilnością i kompetencjami: g2_3, k24, w9_1.
