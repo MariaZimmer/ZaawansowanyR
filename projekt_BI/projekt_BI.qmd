@@ -60,16 +60,48 @@ dane_bkl$woj_clean <- factor(
 
 table(dane_bkl$rok, dane_bkl$woj_clean, useNA = "ifany")
 ```
+```{r}
+table(as_factor(dane_bkl$g2_3), useNA = "ifany")
+```
+
+
+```{r}
+dane_bkl$umiej <- case_when(
+  as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ "nie",
+  as_factor(dane_bkl$g2_3) %in% c("raczej tak", "zdecydowanie tak") ~ "tak",
+  as_factor(dane_bkl$g2_3) == "trudno powiedzieć" ~ "trudno powiedzieć",
+  as_factor(dane_bkl$g2_3) == "odmowa odpowiedzi" ~ "odmowa",
+  as_factor(dane_bkl$g2_3) %in% c("brak danych", "NDT") ~ NA_character_,
+  TRUE ~ NA_character_
+)
+
+dane_bkl$umiej <- factor(dane_bkl$umiej,levels = c("nie", "trudno powiedzieć", "tak", "odmowa"))
+```
+
+```{r}
+dane_bkl$jez <- case_when(
+  as_factor(dane_bkl$w9_1) %in% c("inny język", "łacina", "czeski", "holenderski, niderlandzki", "ukraiński", "białoruski", "grecki", "szwedzki", "norweski", "japoński", "romski", "chorwacki", "słowacki") ~ "inny",
+  as_factor(dane_bkl$w9_1) %in% c("francuski", "hiszpański", "włoski") ~ "romański",
+  as_factor(dane_bkl$w9_1) == "niemiecki" ~ "niemiecki",
+  as_factor(dane_bkl$w9_1) == "rosyjski" ~ "rosyjski",
+    as_factor(dane_bkl$w9_1) == "angielski" ~ "angielski",
+  as_factor(dane_bkl$w9_1) %in% c("brak danych", "NDT") ~ NA_character_,
+  TRUE ~ NA_character_
+)
+
+dane_bkl$jez <- factor(dane_bkl$jez, levels = c("inny", "romański", "niemiecki", "rosyjski", "angielski"))
+```
+
 
 Wybrane zmienne 
 woj_opetat --> woj_clean
-miejsce
-wiek_4K
-g2_3 (Podniósł umiejętności w ciągu ost. 5 lat)
+miejsce_4k
+wiek_4k
+g2_3 --> umiej (Podniósł umiejętności w ciągu ost. 5 lat)
 k24 (gotowość do częstych wyjazdów)
-w9_1 (jezyk obcy 1)
+w9_1 --> jez (jezyk obcy 1)
 ```{r}
-vars <- c("wiek_4k", "miejsce", "woj_clean", "g2_3", "k24", "w9_1")
+vars <- c("wiek_4k", "miejsce_4k", "woj_clean", "umiej", "k24", "jez")
 ```
 
 ```{r}
@@ -115,7 +147,27 @@ for (v in vars) {
 wyniki
 ```
 
-Y=wiek_4k+miejsce+woj_clean+g2_3+k24+w9_1
+WYBRANE ZMIENNE
+woj_clean
+miejsce_4k
+wiek_4k
+umiej (Podniósł umiejętności w ciągu ost. 5 lat)
+k24 (gotowość do częstych wyjazdów)
+jez (jezyk obcy 1)
 
+```{r}
+dane <- dane_bkl %>% select(e1, woj_clean, miejsce_4k, wiek_4k, umiej, k24, jez) 
+head(dane)
+```
+
+
+```{r}
+# LOSOWANIE PROSTE
+set.seed(123)
+
+proba <- dane[
+  sample(1:nrow(dane), size = 1000),
+]
+```
 
 
