@@ -101,7 +101,7 @@ g2_3 --> umiej (Podniósł umiejętności w ciągu ost. 5 lat)
 k24 (gotowość do częstych wyjazdów)
 w9_1 --> jez (jezyk obcy 1)
 ```{r}
-vars <- c("wiek_4k", "miejsce_4k", "woj_clean", "umiej", "k24", "jez")
+vars <- c("wiek_4k", "miejsce_4k", "umiej", "k24", "jez")
 ```
 
 ```{r}
@@ -148,7 +148,6 @@ wyniki
 ```
 
 WYBRANE ZMIENNE
-woj_clean
 miejsce_4k
 wiek_4k
 umiej (Podniósł umiejętności w ciągu ost. 5 lat)
@@ -156,7 +155,12 @@ k24 (gotowość do częstych wyjazdów)
 jez (jezyk obcy 1)
 
 ```{r}
-dane <- dane_bkl %>% select(e1, woj_clean, miejsce_4k, wiek_4k, umiej, k24, jez) 
+dane <- dane_bkl %>% select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
+  mutate(
+    across(c(e1, miejsce_4k, wiek_4k, k24), as_factor),
+    umiej = factor(umiej),
+    jez = factor(jez)
+  )
 head(dane)
 ```
 
@@ -166,8 +170,9 @@ head(dane)
 set.seed(123)
 
 proba <- dane[
-  sample(1:nrow(dane), size = 1000),
+  sample(1:nrow(dane), size = 100),
 ]
+proba
 ```
 
 
