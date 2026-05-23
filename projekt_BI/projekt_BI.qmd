@@ -164,6 +164,7 @@ dane <- dane_bkl %>% select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
 head(dane)
 ```
 
+# PROBA LOSOWA
 
 ```{r}
 # LOSOWANIE PROSTE
@@ -173,6 +174,55 @@ proba <- dane[
   sample(1:nrow(dane), size = 100),
 ]
 proba
+```
+
+# PROBA NIELOSOWA
+
+```{r}
+#ograniczenie zbioru populacji(ucięcie względem zmiennej umiej==tak)
+set.seed(123)
+
+proba_nielosowa <- dane %>%
+  filter(umiej == "tak") %>%
+  slice_sample(n = 300) # CZY TO TU POWINNO BYC?
+
+head(proba_nielosowa)
+```
+
+# ESYMACJA NAIWNA
+
+```{r}
+
+## POPRAWIC LICZENIE ODSETKA 3 WSTAWKI
+
+proba$e1_01 <- ifelse(proba$e1 == "tak", 1,
+                      ifelse(proba$e1 == "nie", 0, NA))
+```
+
+
+```{r}
+table(proba$e1, useNA = "ifany")
+prop.table(table(proba$e1, useNA = "ifany")) * 100
+
+mean(proba$e1 == "tak", na.rm = TRUE) * 100
+```
+
+```{r}
+prop.table(table(proba$e1_01, useNA = "ifany")) * 100
+```
+
+## POLACZENIE W PROB W CELU SYMULACJI BOOTSTRAP
+
+```{r}
+dane_polaczone <- bind_rows(proba, proba_nielosowa)
+
+head(dane_polaczone)
+nrow(dane_polaczone)
+nrow(proba) + nrow(proba_nielosowa)
+```
+
+```{r}
+prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
 ```
 
 
