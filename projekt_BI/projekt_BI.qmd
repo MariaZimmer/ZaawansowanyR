@@ -154,7 +154,7 @@ head(dane)
 set.seed(123)
 
 S_B <- dane[
-  sample(1:nrow(dane), size = 100),
+  sample(1:nrow(dane), size = 500),
 ]
 ```
 
@@ -201,7 +201,7 @@ dane <- dane %>%
   )
 
 S_A <- dane %>%
-  slice_sample(n = 100, replace = FALSE, weight_by = p_A)
+  slice_sample(n = 500, replace = FALSE, weight_by = p_A)
 ```
 
 
@@ -215,18 +215,11 @@ prop.table(table(S_A$e1)) * 100
 ```
 
 # ESTYMACJA NAIWNA - odsetek
-
 ```{r}
-S_A$e1_01 <- ifelse(S_A$e1 == "tak", 1,
-                    ifelse(S_A$e1 == "nie", 0, NA))
-```
-
-
-```{r}
-est_naiwny <- mean(S_A$e1_01, na.rm = TRUE)
+est_naiwny <- mean(S_A$e1_bin, na.rm = TRUE)
 est_naiwny * 100
 
-#Estymator wynosi 59% a prawdziwa wartość tego odsetka w populacji wynosiła ponad 47%. Estymator naiwny zawyżył wartość o ok 12 punktów procentowych.
+#Estymator wynosi 57% a prawdziwa wartość tego odsetka w populacji wynosiła ponad 47%. Estymator naiwny zawyżył wartość o ok 10 punktów procentowych.
 ```
 
 
@@ -246,7 +239,39 @@ est_naiwny * 100
 
 # ESTYMATOR KORYGUJĄCY IPW
 ```{r}
+S_A <- S_A %>%
+  mutate(
+    e1_01 = ifelse(e1 == "tak", 1,
+                   ifelse(e1 == "nie", 0, NA))
+  )
 
+S_B <- S_B %>%
+  mutate(
+    e1_01 = ifelse(e1 == "tak", 1,
+                   ifelse(e1 == "nie", 0, NA))
+  )
+S_B <- S_B %>%
+  mutate(
+    waga_B = nrow(dane) / nrow(S_B)
+  )
+
+S_B_svy <- svydesign(
+  ids = ~1,
+  weights = ~waga_B,
+  data = S_B
+)
+S_A <- droplevels(S_A)
+S_B <- droplevels(S_B)
+```
+
+```{r}
+nonprob(
+  selection = ~ umiej+ wiek_4k,
+  target = ~ e1_01,
+  svydesign = S_B_svy,
+  data = S_A,
+  method_selection = "logit"
+)
 ```
 
 
