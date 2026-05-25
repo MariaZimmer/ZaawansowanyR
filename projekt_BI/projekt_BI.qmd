@@ -221,8 +221,15 @@ nrow(dane_polaczone)
 nrow(proba) + nrow(proba_nielosowa)
 ```
 
+## Naiwny estymator na zbiorze polaczonym
+
 ```{r}
 prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
 ```
+
+
+
+
+
 
 
