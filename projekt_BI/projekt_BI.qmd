@@ -254,7 +254,7 @@ S_B <- S_B %>%
   )
 S_B <- S_B %>%
   mutate(
-    waga_B = nrow(dane) / nrow(S_B)
+    waga_B = 1#nrow(dane) / nrow(S_B)
   )
 
 S_B_svy <- svydesign(
@@ -262,13 +262,13 @@ S_B_svy <- svydesign(
   weights = ~waga_B,
   data = S_B
 )
-S_A <- droplevels(S_A)
-S_B <- droplevels(S_B)
+#S_A <- droplevels(S_A)
+#S_B <- droplevels(S_B)
 ```
 
 ```{r}
 nonprob(
-  selection = ~ umiej+ wiek_4k,
+  selection = ~ wiek_4k + miejsce_4k,# + k24 + jez,# + umiej,
   target = ~ e1_01,
   svydesign = S_B_svy,
   data = S_A,
