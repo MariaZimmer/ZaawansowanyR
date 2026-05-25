@@ -34,7 +34,7 @@ dane_bkl$Y <- ifelse(dane_bkl$e1 == 1, 1,
 
 table(dane_bkl$Y, useNA = "ifany")
 prop.table(table(dane_bkl$Y)) * 100
-#Tylko ok 3,58% respondentów ma pracowało zarobkowo zagranicą w ciągu ostatnich 12 miesięcy
+# Y - to czy obecnie zatrudniony na podstawie umowy o pracę 47% respondetów jest
 ```
 
 ```{r}
@@ -43,23 +43,6 @@ prop.table(table(dane_bkl$rok, dane_bkl$e1), margin = 1) * 100
 # Wartość zmiennej w poszczególnych latach
 ```
 
-```{r}
-# Poprawiona zmienna woj_operat
-dane_bkl$woj_raw <- as.numeric(dane_bkl$woj_operat)
-
-dane_bkl$woj_idx <- ifelse(
-  dane_bkl$rok == 2017,
-  dane_bkl$woj_raw,
-  dane_bkl$woj_raw / 2
-)
-
-dane_bkl$woj_clean <- factor(
-  dane_bkl$woj_idx,
-  levels = 1:16
-)
-
-table(dane_bkl$rok, dane_bkl$woj_clean, useNA = "ifany")
-```
 ```{r}
 table(as_factor(dane_bkl$g2_3), useNA = "ifany")
 ```
@@ -94,12 +77,12 @@ dane_bkl$jez <- factor(dane_bkl$jez, levels = c("inny", "romański", "niemiecki"
 
 
 Wybrane zmienne 
-woj_opetat --> woj_clean
-miejsce_4k
 wiek_4k
+miejsce_4k
 g2_3 --> umiej (Podniósł umiejętności w ciągu ost. 5 lat)
 k24 (gotowość do częstych wyjazdów)
 w9_1 --> jez (jezyk obcy 1)
+
 ```{r}
 vars <- c("wiek_4k", "miejsce_4k", "umiej", "k24", "jez")
 ```
@@ -170,66 +153,135 @@ head(dane)
 # LOSOWANIE PROSTE
 set.seed(123)
 
-proba <- dane[
-  sample(1:nrow(dane), size = 100),
+S_B <- dane[
+  sample(1:nrow(dane), size = 500),
 ]
-proba
 ```
 
 # PROBA NIELOSOWA
 
 ```{r}
-#ograniczenie zbioru populacji(ucięcie względem zmiennej umiej==tak)
+#Sprawdzenie kto częściej występuje w danych
+prop.table(table(dane$wiek_4k, dane$e1), margin = 1) * 100
+prop.table(table(dane$miejsce_4k, dane$e1), margin = 1) * 100
+prop.table(table(dane$umiej, dane$e1), margin = 1) * 100
+prop.table(table(dane$k24, dane$e1), margin = 1) * 100
+prop.table(table(dane$jez, dane$e1), margin = 1) * 100
+# 26% bez doszkalania umiejętności nie ma umowy a 64% osób które zwiększyły umiejętności mają umowy
+```
+```{r}
+#współczynnik do późniejszej regresji w selekcji
+tab_umiej <- prop.table(table(dane$umiej, dane$e1), margin = 1)
+
+p_tak_umiej_tak <- tab_umiej["tak", "tak"]
+p_tak_umiej_nie <- tab_umiej["nie", "tak"]
+
+odds_umiej_tak <- p_tak_umiej_tak / (1 - p_tak_umiej_tak)
+odds_umiej_nie <- p_tak_umiej_nie / (1 - p_tak_umiej_nie)
+
+beta_umiej <- log(odds_umiej_tak / odds_umiej_nie)
+
+beta_umiej
+```
+
+
+```{r}
+# Logitowy mechanizm selekcji wykorzystujące zmienną czy podniósł ktoś kwalifikacje (osoby któe podnosiły mają większe prawdopodobieństwo wejścia do próby)
 set.seed(123)
 
-proba_nielosowa <- dane %>%
-  filter(umiej == "tak") %>%
-  slice_sample(n = 300) # CZY TO TU POWINNO BYC?
+dane <- dane %>%
+  mutate(
+    e1_bin = ifelse(e1 == "tak", 1, 0),
+    # zmienna pomocnicza
+    x_umiej = ifelse(umiej == "tak", 1, 0),
+    logit_p_A = -2 + 1.6 * x_umiej,
+    # Wyraz wolny ustala ogólny poziom prawdopodobieństwa wejścia do próby - mało ważny
+    # współczynnik beta wyznaczony wyżej
+    p_A = plogis(logit_p_A)
+  )
 
-head(proba_nielosowa)
+S_A <- dane %>%
+  slice_sample(n = 500, replace = FALSE, weight_by = p_A)
 ```
 
-# ESYMACJA NAIWNA
 
+# PORÓWNANIE PRÓB S_A I S_B
 ```{r}
+prop.table(table(dane$e1)) * 100
 
-## POPRAWIC LICZENIE ODSETKA 3 WSTAWKI
+prop.table(table(S_B$e1)) * 100
 
-proba$e1_01 <- ifelse(proba$e1 == "tak", 1,
-                      ifelse(proba$e1 == "nie", 0, NA))
+prop.table(table(S_A$e1)) * 100
 ```
 
-
+# ESTYMACJA NAIWNA - odsetek
 ```{r}
-table(proba$e1, useNA = "ifany")
-prop.table(table(proba$e1, useNA = "ifany")) * 100
+est_naiwny <- mean(S_A$e1_bin, na.rm = TRUE)
+est_naiwny * 100
 
-mean(proba$e1 == "tak", na.rm = TRUE) * 100
+#Estymator wynosi 57% a prawdziwa wartość tego odsetka w populacji wynosiła ponad 47%. Estymator naiwny zawyżył wartość o ok 10 punktów procentowych.
 ```
 
-```{r}
-prop.table(table(proba$e1_01, useNA = "ifany")) * 100
-```
 
 ## POLACZENIE W PROB W CELU SYMULACJI BOOTSTRAP
 
 ```{r}
-dane_polaczone <- bind_rows(proba, proba_nielosowa)
+#dane_polaczone <- bind_rows(proba, proba_nielosowa)
 
-head(dane_polaczone)
-nrow(dane_polaczone)
-nrow(proba) + nrow(proba_nielosowa)
+#head(dane_polaczone)
+#nrow(dane_polaczone)
+#nrow(proba) + nrow(proba_nielosowa)
 ```
 
 ## Naiwny estymator na zbiorze polaczonym
 
 ```{r}
-prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
+#prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
+```
+
+# ESTYMATOR KORYGUJĄCY IPW
+```{r}
+S_A <- S_A %>%
+  mutate(
+    e1_01 = ifelse(e1 == "tak", 1,
+                   ifelse(e1 == "nie", 0, NA))
+  )
+
+S_B <- S_B %>%
+  mutate(
+    e1_01 = ifelse(e1 == "tak", 1,
+                   ifelse(e1 == "nie", 0, NA))
+  )
+S_B <- S_B %>%
+  mutate(
+    waga_B = nrow(dane) / nrow(S_B)
+  )
+
+S_B_svy <- svydesign(
+  ids = ~1,
+  weights = ~waga_B,
+  data = S_B
+)
+S_A <- droplevels(S_A)
+S_B <- droplevels(S_B)
+```
+
+```{r}
+nonprob(
+  selection = ~ umiej+ wiek_4k,
+  target = ~ e1_01,
+  svydesign = S_B_svy,
+  data = S_A,
+  method_selection = "logit"
+)
 ```
 
 
 
 
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 5a942e777463c4a24b2d36fc76e043fef51752a3
