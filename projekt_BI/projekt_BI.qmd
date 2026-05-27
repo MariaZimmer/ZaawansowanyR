@@ -19,6 +19,7 @@ library(writexl)
 library(forcats)
 library(boot)
 library(survey)
+library(purrr)
 ```
 
 ```{r}
@@ -354,6 +355,100 @@ wynik_jednej_replikacji <- tibble(
   MI_NN = extract(est3)$mean[1]
 )
 ```
+
+```{r}
+symulacja <- 
+  function (a){
+  set.seed(200+a)
+  dane <- dane %>%
+    mutate(
+      logit_p_A = -2 + 1.5 * umiej,
+      p_A = plogis(logit_p_A)
+    )
+  
+  S_A <- dane %>%
+    slice_sample(
+      n = 500,
+      replace = FALSE,
+      weight_by = p_A
+    )
+  
+  S_B <- dane %>%
+    slice_sample(
+      n = 1000,
+      replace = FALSE
+    ) %>%
+    mutate(
+      w_B = nrow(dane) / 1000
+    )
+  
+  S_B_svy <- svydesign(
+    ids = ~1,
+    weights = ~w_B,
+    data = S_B
+  )
+
+  est_naiwny <- mean(S_A$e1)
+  
+  est1_mean <- tryCatch({
+    
+    est1 <- nonprob(
+      data = S_A,
+      selection = ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      target = ~ e1,
+      svydesign = S_B_svy,
+      method_selection = "logit"
+    )
+    
+    as.numeric(extract(est1)$mean[1])
+    
+  }, error = function(e) NA_real_)
+  
+  est2_mean <- tryCatch({
+    
+    est2 <- nonprob(
+      data = S_A,
+      outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      svydesign = S_B_svy,
+      method_outcome = "glm",
+      family_outcome = "binomial"
+    )
+    
+    as.numeric(extract(est2)$mean[1])
+    
+  }, error = function(e) NA_real_)
+
+  est3_mean <- tryCatch({
+    
+    est3 <- nonprob(
+      data = S_A,
+      outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      svydesign = S_B_svy,
+      method_outcome = "nn",
+      control_outcome = control_out(k = 5)
+    )
+    
+    as.numeric(extract(est3)$mean[1])
+    
+  }, error = function(e) NA_real_)
+  
+  tibble(
+    rep = a,
+    naiwny = est_naiwny,
+    IPW_MLE = est1_mean,
+    MI_GLM = est2_mean,
+    MI_NN = est3_mean
+  )
+
+}
+```
+
+```{r}
+wyniki_test <- map_dfr(1:250, symulacja)
+```
+
+
+
 
 
 
