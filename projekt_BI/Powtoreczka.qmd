@@ -1,0 +1,92 @@
+```{r}
+library(pak)
+pak::pkg_install("ncn-foreigners/nonprobsvy@dev")
+library(nonprobsvy)
+packageVersion("nonprobsvy")
+```
+```{r}
+pkgbuild::has_build_tools(debug = TRUE)
+```
+
+```{r}
+set.seed(2026)
+n <- 10000
+x1 <- rnorm(n)
+x2 <- rnorm(n)
+y <- 1 + 2*x1 + 3*x2 + rnorm(n)
+rho <- plogis(-1-x1-x2) #definicja przynależności do proby losowej
+hist(rho, breaks = "fd")
+```
+
+```{r}
+# losujemy jedną próbę nielosową
+s_a <- rbinom(n, 1, rho) #zmienna która określa R=1 losujemy z rozkłądu bernuliego
+# rho to prawdopodobieństwo które znamy z populacji i z takim prawdopodobieństwem losujemy
+head(cbind(rho, s_a)) # rho i co dostaliśmy jako wylosowane
+s_b <- runif(n) < 0.10 # każda jednostka ma jednakowe prawdopodobieństo inkluzji
+table(s_a)
+dane <- data.frame(x1, x2, y, s_a, s_b, d=n/sum(s_b)) # d to waga dla próby losowej
+head(dane)
+```
+```{r}
+#zbiór próby losowej
+dane_svy <- svydesign(ids = ~1,
+                      data = subset(dane, s_b == T),
+                      weights = ~d)
+#zbiór próby nielosowej
+dane_nielos <- subset(dane, s_a == 1)
+nrow(dane_nielos)
+nrow(dane_svy)
+
+mean(dane_nielos$y)
+mean(dane$y)
+```
+
+# ESTYMATOR IPW
+```{r}
+est1 <- nonprob(
+  data = dane_nielos,
+  selection = ~ x1+x2,
+  target = ~ y,
+  svydesign = dane_svy
+)
+#IPW(MLE, x1, x2) = 0,68
+#IPW(MLE, x1, x2) = -0,53
+#IPW(MLE, x1, x2) = -0,3
+#jeżeli wiemy od jakich zmiennych selekcja zależała
+
+#estymator z kalibracją
+est2 <- nonprob(
+  data = dane_nielos,
+  selection = ~ x1+x2,
+  target = ~ y,
+  svydesign = dane_svy,
+  control_selection = control_sel(est_method = "gee")
+)
+# ponadto kalibracja czyni założenie że x są liniowo związane z y dlatego to tak dobrze działa bo faktycznie tak jest
+#IPW(GEE,x1,x2) to największe wybieramy to
+#IPW(GEE,x1)
+#IPW(GEE,x2)
+```
+
+# MASOWA IMPUTACJA
+```{r}
+# regresyjny estymator
+est3 <- nonprob(
+  data = dane_nielos,
+  svydesign = dane_svy,
+  outcome =y ~ x1+x2)
+#dobrze zadziałało bo użyliśmy poprawnego modelu y zależy od obu x
+```
+
+# ESTYMATOR DOUBLE
+```{r}
+est4 <- nonprob(
+  data = dane_nielos,
+  svydesign = dane_svy,
+  selection = ~ x1+x2,
+  outcome =y ~ x1+x2)
+#jak usuniemy jakiegoś x z jednego równania to niewiele się zmieni ponieważ jest podwójnie odporny
+# jak oba modele są źle wyspecyfikowane czyli usuniemy w każdym równaniu x to znacząco się popsuło
+```
+

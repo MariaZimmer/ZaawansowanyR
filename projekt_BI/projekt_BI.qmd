@@ -265,13 +265,14 @@ S_B <- droplevels(S_B)
 ```
 
 ```{r}
-nonprob(
+ipw_est <- nonprob(
   selection = ~ umiej+ wiek_4k,
   target = ~ e1_01,
   svydesign = S_B_svy,
   data = S_A,
   method_selection = "logit"
 )
+# estymator naiwny miał 0,6 i
 ```
 
 
