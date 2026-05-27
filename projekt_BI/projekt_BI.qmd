@@ -15,6 +15,10 @@ library(readxl)
 library(haven)
 library(nonprobsvy)
 library(dplyr)
+library(writexl)
+library(forcats)
+library(boot)
+library(survey)
 ```
 
 ```{r}
@@ -49,16 +53,25 @@ table(as_factor(dane_bkl$g2_3), useNA = "ifany")
 
 
 ```{r}
+#dane_bkl$umiej <- case_when(
+#  as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ "nie",
+#  as_factor(dane_bkl$g2_3) %in% c("raczej tak", "zdecydowanie tak") ~ "tak",
+#  as_factor(dane_bkl$g2_3) == "trudno powiedzieć" ~ "trudno powiedzieć",
+#  as_factor(dane_bkl$g2_3) == "odmowa odpowiedzi" ~ "odmowa",
+#  as_factor(dane_bkl$g2_3) %in% c("brak danych", "NDT") ~ NA_character_,
+#  TRUE ~ NA_character_
+#)
+
+#dane_bkl$umiej <- factor(dane_bkl$umiej,levels = c("nie", "trudno powiedzieć", "tak", "odmowa"))
 dane_bkl$umiej <- case_when(
-  as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ "nie",
-  as_factor(dane_bkl$g2_3) %in% c("raczej tak", "zdecydowanie tak") ~ "tak",
-  as_factor(dane_bkl$g2_3) == "trudno powiedzieć" ~ "trudno powiedzieć",
-  as_factor(dane_bkl$g2_3) == "odmowa odpowiedzi" ~ "odmowa",
-  as_factor(dane_bkl$g2_3) %in% c("brak danych", "NDT") ~ NA_character_,
-  TRUE ~ NA_character_
+  as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ 0,
+  as_factor(dane_bkl$g2_3) %in% c("raczej tak", "zdecydowanie tak") ~ 1,
+  as_factor(dane_bkl$g2_3) %in% c("trudno powiedzieć", "odmowa odpowiedzi", "brak danych", "NDT") ~ NA_real_,
+  TRUE ~ NA_real_
 )
 
-dane_bkl$umiej <- factor(dane_bkl$umiej,levels = c("nie", "trudno powiedzieć", "tak", "odmowa"))
+dane_bkl <- dane_bkl %>%
+  filter(!is.na(umiej))
 ```
 
 ```{r}
@@ -138,11 +151,42 @@ k24 (gotowość do częstych wyjazdów)
 jez (jezyk obcy 1)
 
 ```{r}
-dane <- dane_bkl %>% select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
+dane <- dane_bkl %>%
+  select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
   mutate(
-    across(c(e1, miejsce_4k, wiek_4k, k24), as_factor),
-    umiej = factor(umiej),
-    jez = factor(jez)
+    e1 = as_factor(e1),
+    e1 = case_when(
+      e1 == "tak" ~ 1,
+      e1 == "nie" ~ 0,
+      TRUE ~ NA_real_
+    ),
+    
+    miejsce_4k = as_factor(miejsce_4k),
+    miejsce_4k = factor(miejsce_4k),
+    
+    wiek_4k = as_factor(wiek_4k),
+    wiek_4k = factor(wiek_4k),
+    
+    umiej = as.numeric(umiej),
+    
+    k24 = as_factor(k24),
+    k24 = factor(k24),
+    
+    jez = factor(
+      jez,
+      levels = c("inny", "romański", "niemiecki", "rosyjski", "angielski")
+    )
+  ) %>%
+  filter(
+    !is.na(e1),
+    !is.na(miejsce_4k),
+    !is.na(wiek_4k),
+    !is.na(umiej),
+    !is.na(k24),
+    !is.na(jez)
+  ) %>%
+  mutate(
+    across(where(is.factor), fct_drop)
   )
 head(dane)
 ```
@@ -154,7 +198,7 @@ head(dane)
 set.seed(123)
 
 S_B <- dane[
-  sample(1:nrow(dane), size = 500),
+  sample(1:nrow(dane), size = 1000),
 ]
 ```
 
@@ -171,10 +215,13 @@ prop.table(table(dane$jez, dane$e1), margin = 1) * 100
 ```
 ```{r}
 #współczynnik do późniejszej regresji w selekcji
-tab_umiej <- prop.table(table(dane$umiej, dane$e1), margin = 1)
+tab_umiej <- prop.table(
+  table(umiej = dane$umiej, e1 = dane$e1),
+  margin = 1
+)
 
-p_tak_umiej_tak <- tab_umiej["tak", "tak"]
-p_tak_umiej_nie <- tab_umiej["nie", "tak"]
+p_tak_umiej_tak <- tab_umiej["1", "1"]
+p_tak_umiej_nie <- tab_umiej["0", "1"]
 
 odds_umiej_tak <- p_tak_umiej_tak / (1 - p_tak_umiej_tak)
 odds_umiej_nie <- p_tak_umiej_nie / (1 - p_tak_umiej_nie)
@@ -191,10 +238,7 @@ set.seed(123)
 
 dane <- dane %>%
   mutate(
-    e1_bin = ifelse(e1 == "tak", 1, 0),
-    # zmienna pomocnicza
-    x_umiej = ifelse(umiej == "tak", 1, 0),
-    logit_p_A = -2 + 1.6 * x_umiej,
+    logit_p_A = -2 + 1.5 * umiej,
     # Wyraz wolny ustala ogólny poziom prawdopodobieństwa wejścia do próby - mało ważny
     # współczynnik beta wyznaczony wyżej
     p_A = plogis(logit_p_A)
@@ -213,13 +257,69 @@ prop.table(table(S_B$e1)) * 100
 
 prop.table(table(S_A$e1)) * 100
 ```
+```{r}
+head(S_A)
+head(S_B)
+```
+
 
 # ESTYMACJA NAIWNA - odsetek
 ```{r}
-est_naiwny <- mean(S_A$e1_bin, na.rm = TRUE)
+est_naiwny <- mean(S_A$e1, na.rm = TRUE)
 est_naiwny * 100
 
-#Estymator wynosi 57% a prawdziwa wartość tego odsetka w populacji wynosiła ponad 47%. Estymator naiwny zawyżył wartość o ok 10 punktów procentowych.
+#Estymator wynosi 57% a prawdziwa wartość tego odsetka w populacji wynosiła ponad 52%. Estymator naiwny zawyżył wartość o ok 5 punktów procentowych.
+```
+
+# ZBIÓR PRÓBY LOSOWEJ
+```{r}
+waga_B <- nrow(dane) / 1000
+S_B_svy <- svydesign(
+  ids = ~1,
+  weights = ~waga_B,
+  data = S_B
+)
+```
+
+# ESTYMATOR KORYGUJĄCY IPW
+```{r}
+est1 <- nonprob(
+  data = S_A,
+  selection = ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+  target = ~ e1,
+  svydesign = S_B_svy,
+  method_selection = "logit"#,
+  #control_selection = control_sel(est_method = "gee") gorszy wynik
+)
+extract(est1)
+```
+# MASOWA IMPUTACJA GLM I NN
+```{r}
+est2 <- nonprob(
+  data = S_A,
+  outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+  svydesign = S_B_svy,
+  method_outcome = "glm",
+  family_outcome = "binomial"
+)
+```
+
+```{r}
+est3 <- nonprob(
+  data = S_A,
+  outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+  svydesign = S_B_svy,
+  method_outcome = "nn",
+  control_outcome = control_out(k = 5)
+)
+```
+
+```{r}
+rbind(
+  "IPW-MLE" = extract(est1),
+  "MI-GLM" = extract(est2),
+  "MI-NN" = extract(est3)
+)
 ```
 
 
@@ -239,27 +339,21 @@ est_naiwny * 100
 #prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
 ```
 
-# ESTYMATOR KORYGUJĄCY IPW
+
+
+
+# WIELKA SYMULACJA
 ```{r}
-S_A <- S_A %>%
-  mutate(
-    e1_01 = ifelse(e1 == "tak", 1,
-                   ifelse(e1 == "nie", 0, NA))
-  )
+theta <- mean(dane$e1)
+theta
 
-S_B <- S_B %>%
-  mutate(
-    e1_01 = ifelse(e1 == "tak", 1,
-                   ifelse(e1 == "nie", 0, NA))
-  )
-S_B <- S_B %>%
-  mutate(
-    waga_B = 1#nrow(dane) / nrow(S_B)
-  )
-
-S_B_svy <- svydesign(
-  ids = ~1,
-  weights = ~waga_B,
-  data = S_B
+wynik_jednej_replikacji <- tibble(
+  naiwny = mean(S_A$e1),
+  IPW = extract(est1)$mean[1],
+  MI_GLM = extract(est2)$mean[1],
+  MI_NN = extract(est3)$mean[1]
 )
 ```
+
+
+
