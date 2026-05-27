@@ -233,6 +233,8 @@ est_naiwny * 100
 #nrow(proba) + nrow(proba_nielosowa)
 ```
 
+## Naiwny estymator na zbiorze polaczonym
+
 ```{r}
 #prop.table(table(dane_polaczone$e1, useNA = "ifany")) * 100
 ```
@@ -252,7 +254,7 @@ S_B <- S_B %>%
   )
 S_B <- S_B %>%
   mutate(
-    waga_B = nrow(dane) / nrow(S_B)
+    waga_B = 1#nrow(dane) / nrow(S_B)
   )
 
 S_B_svy <- svydesign(
@@ -260,22 +262,4 @@ S_B_svy <- svydesign(
   weights = ~waga_B,
   data = S_B
 )
-S_A <- droplevels(S_A)
-S_B <- droplevels(S_B)
 ```
-
-```{r}
-ipw_est <- nonprob(
-  selection = ~ umiej+ wiek_4k,
-  target = ~ e1_01,
-  svydesign = S_B_svy,
-  data = S_A,
-  method_selection = "logit"
-)
-# estymator naiwny miał 0,6 i
-```
-
-
-
-
-
