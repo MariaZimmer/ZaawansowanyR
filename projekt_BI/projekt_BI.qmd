@@ -12,6 +12,7 @@ format: html
 
 ```{r}
 library(readxl)
+library(tidyr)
 library(haven)
 library(nonprobsvy)
 library(dplyr)
@@ -447,6 +448,30 @@ symulacja <-
 wyniki_test <- map_dfr(1:250, symulacja)
 ```
 
+```{r}
+ocena_estymatorow <- wyniki_test %>%
+  pivot_longer(
+    cols = c(naiwny, IPW_MLE, MI_GLM, MI_NN),
+    names_to = "estymator",
+    values_to = "theta_hat"
+  ) %>%
+  group_by(estymator) %>%
+  summarise(
+    B_udane = sum(!is.na(theta_hat)),
+    
+    theta_srednia = mean(theta_hat, na.rm = TRUE),
+    
+    Bias = theta_srednia - theta,
+    
+    Variance = mean((theta_hat - theta_srednia)^2, na.rm = TRUE),
+    
+    MSE = Bias^2 + Variance,
+    
+    .groups = "drop"
+  )
+
+ocena_estymatorow
+```
 
 
 
