@@ -1,0 +1,206 @@
+---
+title: "Projekt BI 2025/26 - grupa (wpisać numer zgodny z moodle)"
+format: 
+  html:
+    self-contained: true
+    table-of-contents: true
+    number-sections: true
+    df-print: kable
+editor: source
+execute: 
+  eval: true
+  warning: false
+  message: false
+toc-title: Spis treści
+lang: pl
+---
+
+## Autorzy
+
+Maria Zimmer (127910) i Tymoteusz Pomarzyński ()
+
+## Wprowadzenie
+
+-   zwięzły opis projektu dotyczący wyboru danych oraz estimatorów
+Celem projektu jest porównanie estymatorów na podstawie danych dotyczących gospodarstw domowych. Jako zmienną celu wybrano e1 - "Obecnie zatrudniony na podstawie umowy o pracę" a jako zmienne pomocnicze wykorzystano: wiek_4k ("Wiek respondenta (w przedziałach) - warstwy użyte w ważeniu"), miejsce_4k ("Miejsce zamieszkania respondenta"), g2_3 ("Podniósł umiejętności w ciągu ost. 5 lat"), k24 ("Gotowość do częstych wyjazdów") oraz w9_1 ("Język obcy 1"). W ramach projektu porównano 4 estymatory: naiwny, estymator IPW oparty na odwrotnym ważeniu prawdopodobieństwem, gdzie model selekcji estymowany jest metodą największej wiarygodności, estymator masowej imputacji oparty na uogólnionym modelu liniowym oraz estymator masowej imputacji oparty na metodzie najbliższych sąsiadów.
+
+
+## Symulacja
+
+### Założenia
+1.  ustalono wielkość próby losowej na $n_a=1000$ i próby nielosowej na $n_b=500$,
+2.  próba nielosowa została wygenerowana za pomocą modelu logitowego przez nadanie każdej obserwacji prawdopodobieństwa wyboru zależnego od zmiennej g2_3 odpowiadającej za podnoszenie umiejętności przez respondentów
+$$
+logit(pA)=−2+1.5⋅umiej
+$$
+3.  zmienną celu jest e1 - "Obecnie zatrudniony na podstawie umowy o pracę"
+4.  Próbę losową wygenerowano na podstawie losowania prostego
+
+
+### Ocena estymatorów
+estymator theta_srednia Bias        Variance      MSE           RMSE
+IPW_MLE		0.5224193	    0.002282497	0.0005297821	0.0005349919	0.02312989
+MI_GLM		0.5220613	    0.001924505	0.0005004266	0.0005041303	0.02245285
+MI_NN	   	0.5449944	    0.024857563	0.0006796414	0.0012975398	0.03602138
+naiwny		0.5983920	    0.078255163	0.0004306463	0.0065545168	0.08095997
+
+
+### Kod do symulacji
+```{r}
+#wczytanie bibliotek
+library(readxl)
+library(tidyr)
+library(haven)
+library(nonprobsvy)
+library(dplyr)
+library(writexl)
+library(forcats)
+library(boot)
+library(survey)
+library(purrr)
+#wczytanie danych i ich przegląd
+dane_bkl <- read_sav("Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
+attr(dane_bkl$e1, "labels")
+table(as_factor(dane_bkl$e1), useNA = "ifany")
+dane_bkl$Y <- ifelse(dane_bkl$e1 == 1, 1,
+                         ifelse(dane_bkl$e1 == 0, 0, NA))
+table(dane_bkl$Y, useNA = "ifany")
+prop.table(table(dane_bkl$Y)) * 100
+table(dane_bkl$rok, dane_bkl$e1, useNA = "ifany")
+prop.table(table(dane_bkl$rok, dane_bkl$e1), margin = 1) * 100
+#agregacja kategorii zmiennych
+dane_bkl$umiej <- case_when(
+  as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ 0,
+  as_factor(dane_bkl$g2_3) %in% c("raczej tak", "zdecydowanie tak") ~ 1,
+  as_factor(dane_bkl$g2_3) %in% c("trudno powiedzieć", "odmowa odpowiedzi", "brak danych", "NDT") ~ NA_real_,
+  TRUE ~ NA_real_
+)
+dane_bkl <- dane_bkl %>%
+  filter(!is.na(umiej))
+dane_bkl$jez <- case_when(
+  as_factor(dane_bkl$w9_1) %in% c("inny język", "łacina", "czeski", "holenderski, niderlandzki", "ukraiński", "białoruski", "grecki", "szwedzki", "norweski", "japoński", "romski", "chorwacki", "słowacki") ~ "inny",
+  as_factor(dane_bkl$w9_1) %in% c("francuski", "hiszpański", "włoski") ~ "romański",
+  as_factor(dane_bkl$w9_1) == "niemiecki" ~ "niemiecki",
+  as_factor(dane_bkl$w9_1) == "rosyjski" ~ "rosyjski",
+    as_factor(dane_bkl$w9_1) == "angielski" ~ "angielski",
+  as_factor(dane_bkl$w9_1) %in% c("brak danych", "NDT") ~ NA_character_,
+  TRUE ~ NA_character_
+)
+dane_bkl$jez <- factor(dane_bkl$jez, levels = c("inny", "romański", "niemiecki", "rosyjski", "angielski"))
+#sprawdzenie powiązania zmiennych x z y
+vars <- c("wiek_4k", "miejsce_4k", "umiej", "k24", "jez")
+wyniki <- data.frame()
+for (v in vars) {
+  x <- dane_bkl[[v]]
+  if (inherits(x, "haven_labelled")) {
+    x <- as_factor(zap_missing(x))
+  } else {
+    x <- factor(x)
+  }
+  tmp <- data.frame(
+    x = x,
+    Y = dane_bkl$Y
+  )
+  tmp <- na.omit(tmp)
+  tmp$x <- droplevels(tmp$x)
+  tmp$Y <- droplevels(factor(tmp$Y))
+  tab <- table(tmp$x, tmp$Y)
+  test <- suppressWarnings(chisq.test(tab, correct = FALSE))
+  chi2 <- as.numeric(test$statistic)
+  n <- sum(tab)
+  V <- sqrt(chi2 / (n * (min(dim(tab)) - 1)))
+  wyniki <- rbind(wyniki, data.frame(
+    zmienna = v,
+    V_Cramera = round(V, 3),
+    p_value = signif(test$p.value, 4),
+    kategorie = nrow(tab),
+    n = n
+  ))
+}
+wyniki
+# ograniczenie zbioru danych tylko do potrzebnych zapisując do obiektu dane
+dane <- dane_bkl %>%
+  select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
+  mutate(
+    e1 = as_factor(e1),
+    e1 = case_when(
+      e1 == "tak" ~ 1,
+      e1 == "nie" ~ 0,
+      TRUE ~ NA_real_
+    ),
+    miejsce_4k = as_factor(miejsce_4k),
+    miejsce_4k = factor(miejsce_4k),
+    wiek_4k = as_factor(wiek_4k),
+    wiek_4k = factor(wiek_4k),
+    umiej = as.numeric(umiej),
+    k24 = as_factor(k24),
+    k24 = factor(k24),
+    jez = factor(
+      jez,
+      levels = c("inny", "romański", "niemiecki", "rosyjski", "angielski")
+    )
+  ) %>%
+  filter(
+    !is.na(e1),
+    !is.na(miejsce_4k),
+    !is.na(wiek_4k),
+    !is.na(umiej),
+    !is.na(k24),
+    !is.na(jez)
+  ) %>%
+  mutate(
+    across(where(is.factor), fct_drop)
+  )
+#proba losowa S_B - losowanie proste
+set.seed(123)
+S_B <- dane[
+  sample(1:nrow(dane), size = 1000),
+]
+#przegląd danych do losowania nielosowego
+prop.table(table(dane$wiek_4k, dane$e1), margin = 1) * 100
+prop.table(table(dane$miejsce_4k, dane$e1), margin = 1) * 100
+prop.table(table(dane$umiej, dane$e1), margin = 1) * 100
+prop.table(table(dane$k24, dane$e1), margin = 1) * 100
+prop.table(table(dane$jez, dane$e1), margin = 1) * 100
+tab_umiej <- prop.table(
+  table(umiej = dane$umiej, e1 = dane$e1),
+  margin = 1
+)
+p_tak_umiej_tak <- tab_umiej["1", "1"]
+p_tak_umiej_nie <- tab_umiej["0", "1"]
+odds_umiej_tak <- p_tak_umiej_tak / (1 - p_tak_umiej_tak)
+odds_umiej_nie <- p_tak_umiej_nie / (1 - p_tak_umiej_nie)
+beta_umiej <- log(odds_umiej_tak / odds_umiej_nie)
+#próba nielosowa S_A
+dane <- dane %>%
+  mutate(
+    logit_p_A = -2 + beta_umiej * umiej,
+    p_A = plogis(logit_p_A)
+  )
+S_A <- dane %>%
+  slice_sample(n = 500, replace = FALSE, weight_by = p_A)
+#porównaie prób S_A i S_B ze zbiorem bkl
+prop.table(table(dane$e1)) * 100
+prop.table(table(S_B$e1)) * 100
+prop.table(table(S_A$e1)) * 100
+#estymacja naiwna
+est_naiwny <- mean(S_A$e1, na.rm = TRUE)
+est_naiwny * 100
+#utworzenie zbioru próby losowej
+waga_B <- nrow(dane) / 1000
+S_B_svy <- svydesign(
+  ids = ~1,
+  weights = ~waga_B,
+  data = S_B
+)
+```
+
+
+## Wyniki symulacji
+
+-   opis wyników symulacji (tabela i wykresy)
+-   interpretacja wyników
+
+## Podsumowanie
+
+-   zwięzłe podsumowanie projektu

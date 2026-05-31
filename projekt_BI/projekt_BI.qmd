@@ -25,7 +25,6 @@ library(purrr)
 
 ```{r}
 dane_bkl <- read_sav("Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
-#zmienna y1 odsetek osób pracujących za granicą 
 ```
 
 
@@ -38,7 +37,7 @@ table(as_factor(dane_bkl$e1), useNA = "ifany")
 dane_bkl$Y <- ifelse(dane_bkl$e1 == 1, 1,
                          ifelse(dane_bkl$e1 == 0, 0, NA))
 
-table(dane_bkl$Y, useNA = "ifany")
+
 prop.table(table(dane_bkl$Y)) * 100
 # Y - to czy obecnie zatrudniony na podstawie umowy o pracę 47% respondetów jest
 ```
@@ -466,6 +465,8 @@ ocena_estymatorow <- wyniki_test %>%
     Variance = mean((theta_hat - theta_srednia)^2, na.rm = TRUE),
     
     MSE = Bias^2 + Variance,
+    
+    RMSE = sqrt(MSE),
     
     .groups = "drop"
   )
