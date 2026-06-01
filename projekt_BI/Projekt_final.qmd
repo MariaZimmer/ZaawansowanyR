@@ -31,18 +31,22 @@ Celem projektu jest porównanie estymatorów na podstawie danych dotyczących go
 1.  ustalono wielkość próby losowej na $n_a=1000$ i próby nielosowej na $n_b=500$,
 2.  próba nielosowa została wygenerowana za pomocą modelu logitowego przez nadanie każdej obserwacji prawdopodobieństwa wyboru zależnego od zmiennej g2_3 odpowiadającej za podnoszenie umiejętności przez respondentów
 $$
-logit(pA)=−2+1.5⋅umiej
+logit(pA)=−2+1.54⋅umiej
 $$
 3.  zmienną celu jest e1 - "Obecnie zatrudniony na podstawie umowy o pracę"
 4.  Próbę losową wygenerowano na podstawie losowania prostego
 
 
 ### Ocena estymatorów
-estymator theta_srednia Bias        Variance      MSE           RMSE
-IPW_MLE		0.5224193	    0.002282497	0.0005297821	0.0005349919	0.02312989
-MI_GLM		0.5220613	    0.001924505	0.0005004266	0.0005041303	0.02245285
-MI_NN	   	0.5449944	    0.024857563	0.0006796414	0.0012975398	0.03602138
-naiwny		0.5983920	    0.078255163	0.0004306463	0.0065545168	0.08095997
+estymator theta_srednia Bias          Variance      MSE           RMSE
+IPW_MLE		0.5210916	    0.0009547413	0.0006104515	0.000611363	0.02472576
+MI_GLM		0.5202974	    0.0001605887	0.0005721982	0.000572224	0.02392120
+MI_NN	  	0.5439784	    0.0238415628	0.0007594624	0.001327883	0.03644012
+naiwny		0.5969360	    0.0767991628	0.0004194599	0.006317571	0.07948315
+
+Dla każdego estymatora obliczono średnią wartość estymatora z replikacji, obciążenie, wariancję, MSE i RMSE. Obciążenie informuje, czy dany estymator systematycznie zawyża lub zaniża wartość prawdziwego parametru. Wariancja pokazuje zmienność wyników, a MSE i RMSE służą do ogólnej oceny estymatorów.
+
+Najlepszy okazał się estymator masowej imputacji glm jednak nieznacznie gorszy od niego okazał się estymator ipw.
 
 
 ### Kod do symulacji
@@ -58,6 +62,7 @@ library(forcats)
 library(boot)
 library(survey)
 library(purrr)
+library(ggplot2)
 #wczytanie danych i ich przegląd
 dane_bkl <- read_sav("Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
 attr(dane_bkl$e1, "labels")
@@ -151,56 +156,169 @@ dane <- dane_bkl %>%
   mutate(
     across(where(is.factor), fct_drop)
   )
-#proba losowa S_B - losowanie proste
-set.seed(123)
-S_B <- dane[
-  sample(1:nrow(dane), size = 1000),
-]
 #przegląd danych do losowania nielosowego
 prop.table(table(dane$wiek_4k, dane$e1), margin = 1) * 100
 prop.table(table(dane$miejsce_4k, dane$e1), margin = 1) * 100
 prop.table(table(dane$umiej, dane$e1), margin = 1) * 100
 prop.table(table(dane$k24, dane$e1), margin = 1) * 100
 prop.table(table(dane$jez, dane$e1), margin = 1) * 100
-tab_umiej <- prop.table(
-  table(umiej = dane$umiej, e1 = dane$e1),
-  margin = 1
-)
+tab_umiej <- prop.table(table(umiej = dane$umiej, e1 = dane$e1),margin = 1)
 p_tak_umiej_tak <- tab_umiej["1", "1"]
 p_tak_umiej_nie <- tab_umiej["0", "1"]
 odds_umiej_tak <- p_tak_umiej_tak / (1 - p_tak_umiej_tak)
 odds_umiej_nie <- p_tak_umiej_nie / (1 - p_tak_umiej_nie)
 beta_umiej <- log(odds_umiej_tak / odds_umiej_nie)
-#próba nielosowa S_A
-dane <- dane %>%
-  mutate(
-    logit_p_A = -2 + beta_umiej * umiej,
-    p_A = plogis(logit_p_A)
+
+#funkcja do przeprowadzania symulacji
+symulacja <- 
+  function (a){
+  set.seed(200+a)
+  dane <- dane %>%
+    mutate(
+      logit_p_A = -2 + beta_umiej * umiej,
+      p_A = plogis(logit_p_A)
+    )
+  #próba nielosowa S_A
+  S_A <- dane %>%
+    slice_sample(
+      n = 500,
+      replace = FALSE,
+      weight_by = p_A
+    )
+  #próba losowa S_B
+  S_B <- dane %>%
+    slice_sample(
+      n = 1000,
+      replace = FALSE
+    ) %>%
+    mutate(
+      w_B = nrow(dane) / 1000
+    )
+  #zbiór próba losowa
+  S_B_svy <- svydesign(
+    ids = ~1,
+    weights = ~w_B,
+    data = S_B
   )
-S_A <- dane %>%
-  slice_sample(n = 500, replace = FALSE, weight_by = p_A)
+  #estymator naiwny
+  est_naiwny <- mean(S_A$e1)
+  
+  #estymator ipw
+  est1_mean <- tryCatch({
+    est1 <- nonprob(
+      data = S_A,
+      selection = ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      target = ~ e1,
+      svydesign = S_B_svy,
+      method_selection = "logit"
+    )
+    as.numeric(extract(est1)$mean[1])
+  }, error = function(e) NA_real_)
+  
+  #estymator mi glm
+  est2_mean <- tryCatch({
+    est2 <- nonprob(
+      data = S_A,
+      outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      svydesign = S_B_svy,
+      method_outcome = "glm",
+      family_outcome = "binomial"
+    )
+    as.numeric(extract(est2)$mean[1])
+  }, error = function(e) NA_real_)
+
+    #estymator mi nn
+  est3_mean <- tryCatch({
+    est3 <- nonprob(
+      data = S_A,
+      outcome = e1 ~ miejsce_4k + wiek_4k + umiej + k24 + jez,
+      svydesign = S_B_svy,
+      method_outcome = "nn",
+      control_outcome = control_out(k = 5)
+    )
+    as.numeric(extract(est3)$mean[1])
+  }, error = function(e) NA_real_)
+  
+  tibble(
+    rep = a,
+    naiwny = est_naiwny,
+    IPW_MLE = est1_mean,
+    MI_GLM = est2_mean,
+    MI_NN = est3_mean
+  )
+  }
 #porównaie prób S_A i S_B ze zbiorem bkl
-prop.table(table(dane$e1)) * 100
-prop.table(table(S_B$e1)) * 100
-prop.table(table(S_A$e1)) * 100
-#estymacja naiwna
-est_naiwny <- mean(S_A$e1, na.rm = TRUE)
-est_naiwny * 100
-#utworzenie zbioru próby losowej
-waga_B <- nrow(dane) / 1000
-S_B_svy <- svydesign(
-  ids = ~1,
-  weights = ~waga_B,
-  data = S_B
-)
+#prop.table(table(dane$e1)) * 100
+#prop.table(table(S_B$e1)) * 100
+#prop.table(table(S_A$e1)) * 100
+
+#symulacja dla 250 wywołań
+wyniki_symulacji <- map_dfr(1:250, symulacja)
+
+ocena_estymatorow <- wyniki_symulacji %>%
+  pivot_longer(
+    cols = c(naiwny, IPW_MLE, MI_GLM, MI_NN),
+    names_to = "estymator",
+    values_to = "theta_hat"
+  ) %>%
+  group_by(estymator) %>%
+  summarise(
+    B_udane = sum(!is.na(theta_hat)),
+    theta_srednia = mean(theta_hat, na.rm = TRUE),
+    Bias = theta_srednia - theta,
+    Variance = mean((theta_hat - theta_srednia)^2, na.rm = TRUE),
+    MSE = Bias^2 + Variance,
+    RMSE = sqrt(MSE),
+    .groups = "drop"
+  )
 ```
 
 
 ## Wyniki symulacji
-
--   opis wyników symulacji (tabela i wykresy)
 -   interpretacja wyników
 
-## Podsumowanie
+```{r}
+ocena_estymatorow
+ggplot(ocena_estymatorow, aes(x = estymator, y = Bias)) +
+  geom_col() +
+  labs(
+    title = "Obciążenie estymatorów",
+    x = "Estymator",
+    y = "Bias"
+  )
+ggplot(ocena_estymatorow, aes(x = estymator, y = RMSE)) +
+  geom_col() +
+  labs(
+    title = "Porównanie estymatorów według RMSE",
+    x = "Estymator",
+    y = "RMSE"
+  )
+bledy_estymatorow <- wyniki_symulacji %>%
+  select(naiwny, IPW_MLE, MI_GLM, MI_NN) %>%
+  mutate(
+    across(everything(), ~ .x - theta)
+  ) %>%
+  as.data.frame()
+boxplot(
+  bledy_estymatorow,
+  main = "Rozkład błędów estymatorów",
+  xlab = "Estymator",
+  ylab = "Błąd estymacji"
+)
 
--   zwięzłe podsumowanie projektu
+abline(h = 0, col = "red", lwd = 2)
+```
+Najlepiej wypadł estymator MI_GLM, bo ma najniższe MSE = 0.000572 i RMSE = 0.02392 a przede wszystkim najlepiej szacuje wartość odsetka osób zatrudnionych na umowę o pracę (Bias praktycznie zerowy ok. 0,00016), nieznacznie gorszy był estymator IPW_MLE, też ma bardzo małe obciążenie i RMSE. Te dwa estymatory dają bardzo podobne wyniki.
+MI_NN zawyża wynik, bo Bias wynosi ok. 0.024. Estymator MI-NN poprawiał wynik względem estymatora naiwnego, ale był mniej skuteczny niż MI-GLM i IPW-MLE. Może to wynikać z tego, że metoda najbliższych sąsiadów jest bardziej wrażliwa na strukturę danych. Estymator naiwny jest zdecydowanie najgorszy, bo mocno zawyża odsetek zatrudnionych na umowę o pracę (Bias ok. 0.077) i ma znacznie wyższe od pozostałych wartości MSE i RMSE.
+
+## Podsumowanie
+W przeprowadzonej symulacji próba nielosowa miała zawyżony odsetek osób zatrudnionych na podstawie umowy o pracę, związany z tym, że więcej ludzi podnoszących swoje umiejętności znajdywała się w badanej próbie. Wkazuje na to estymator naiwny, który jest wyraźnie wyższy od rzeczywistej wartości parametru w populacji. Estymatory korygujące poprawiły wynik, ponieważ wykorzystywały zmienne pomocnicze. MI-GLM osiągnął najlepszy wynik, ponieważ jednocześnie zachował bardzo małe obciążenie i umiarkowaną zmienność. Oznacza to, że nie tylko przeciętnie trafnie odtwarzał wartość populacyjną, ale także był stabilny w kolejnych replikacjach symulacji. Estymator IPW-MLE również wypadł bardzo dobrze i dawał wyniki zbliżone do MI-GLM.
+
+
+
+
+
+
+
+
+
