@@ -1,5 +1,5 @@
 ---
-title: "Projekt BI 2025/26 - grupa (wpisać numer zgodny z moodle)"
+title: "Projekt BI 2025/26 - grupa 2"
 format: 
   html:
     self-contained: true
@@ -38,15 +38,15 @@ $$
 
 
 ### Ocena estymatorów
-estymator theta_srednia Bias          Variance      MSE           RMSE
-IPW_MLE		0.5210916	    0.0009547413	0.0006104515	0.000611363	0.02472576
-MI_GLM		0.5202974	    0.0001605887	0.0005721982	0.000572224	0.02392120
-MI_NN	  	0.5439784	    0.0238415628	0.0007594624	0.001327883	0.03644012
-naiwny		0.5969360	    0.0767991628	0.0004194599	0.006317571	0.07948315
-
 Dla każdego estymatora obliczono średnią wartość estymatora z replikacji, obciążenie, wariancję, MSE i RMSE. Obciążenie informuje, czy dany estymator systematycznie zawyża lub zaniża wartość prawdziwego parametru. Wariancja pokazuje zmienność wyników, a MSE i RMSE służą do ogólnej oceny estymatorów.
-
-Najlepszy okazał się estymator masowej imputacji glm jednak nieznacznie gorszy od niego okazał się estymator ipw.
+```{r}
+#estymator theta_srednia Bias          Variance      MSE           RMSE
+#IPW_MLE		0.5210916	    0.0009547413	0.0006104515	0.000611363	0.02472576
+#MI_GLM		  0.5202974	    0.0001605887	0.0005721982	0.000572224	0.02392120
+#MI_NN	  	0.5439784	    0.0238415628	0.0007594624	0.001327883	0.03644012
+#naiwny		  0.5969360	    0.0767991628	0.0004194599	0.006317571	0.07948315
+```
+Najlepszy okazał się estymator masowej imputacji glm jednak nieznacznie gorszy od niego okazał się estymator ipw. Estymator naiwny znacznie przeszacowywał odsetek osób zatrudnionych na umowę o pracę, co przyczyniło nieporządanie, relatywnie wysokich miar MSE i RMSE. Estmator masowej imputacji wykorzystujący metodę najbliższych sąsiadów poprawia wyniki lepiej w stosunku do naiwnego jednak nadal nie tak dobrze jak ten wykonywany metodą glm czy estymator ipw, a ponadto charakteryzuje się najwyższą wariancją co wpływa niekorzystnie.
 
 
 ### Kod do symulacji
@@ -260,6 +260,7 @@ symulacja <-
 #symulacja dla 250 wywołań
 wyniki_symulacji <- map_dfr(1:250, symulacja)
 
+theta <- mean(dane$e1, na.rm = TRUE)
 ocena_estymatorow <- wyniki_symulacji %>%
   pivot_longer(
     cols = c(naiwny, IPW_MLE, MI_GLM, MI_NN),
@@ -280,7 +281,6 @@ ocena_estymatorow <- wyniki_symulacji %>%
 
 
 ## Wyniki symulacji
--   interpretacja wyników
 
 ```{r}
 ocena_estymatorow
