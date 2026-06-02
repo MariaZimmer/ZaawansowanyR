@@ -63,6 +63,7 @@ library(boot)
 library(survey)
 library(purrr)
 library(ggplot2)
+
 #wczytanie danych i ich przegląd
 dane_bkl <- read_sav("Poczona_baza_danych_z_badania_ludnoci_z_lat_20172019_i_2021.sav")
 attr(dane_bkl$e1, "labels")
@@ -73,6 +74,7 @@ table(dane_bkl$Y, useNA = "ifany")
 prop.table(table(dane_bkl$Y)) * 100
 table(dane_bkl$rok, dane_bkl$e1, useNA = "ifany")
 prop.table(table(dane_bkl$rok, dane_bkl$e1), margin = 1) * 100
+
 #agregacja kategorii zmiennych
 dane_bkl$umiej <- case_when(
   as_factor(dane_bkl$g2_3) %in% c("zdecydowanie nie", "raczej nie") ~ 0,
@@ -92,6 +94,7 @@ dane_bkl$jez <- case_when(
   TRUE ~ NA_character_
 )
 dane_bkl$jez <- factor(dane_bkl$jez, levels = c("inny", "romański", "niemiecki", "rosyjski", "angielski"))
+
 #sprawdzenie powiązania zmiennych x z y
 vars <- c("wiek_4k", "miejsce_4k", "umiej", "k24", "jez")
 wyniki <- data.frame()
@@ -123,6 +126,7 @@ for (v in vars) {
   ))
 }
 wyniki
+
 # ograniczenie zbioru danych tylko do potrzebnych zapisując do obiektu dane
 dane <- dane_bkl %>%
   select(e1, miejsce_4k, wiek_4k, umiej, k24, jez) %>%
@@ -156,6 +160,7 @@ dane <- dane_bkl %>%
   mutate(
     across(where(is.factor), fct_drop)
   )
+
 #przegląd danych do losowania nielosowego
 prop.table(table(dane$wiek_4k, dane$e1), margin = 1) * 100
 prop.table(table(dane$miejsce_4k, dane$e1), margin = 1) * 100
