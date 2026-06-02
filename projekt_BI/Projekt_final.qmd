@@ -17,7 +17,7 @@ lang: pl
 
 ## Autorzy
 
-Maria Zimmer (127910) i Tymoteusz Pomarzyński ()
+Maria Zimmer (127910) i Tymoteusz Pomarzyński (127846)
 
 ## Wprowadzenie
 
